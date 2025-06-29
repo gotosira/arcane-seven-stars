@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Run the Thai Card App</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .method {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+        }
+        .highlight {
+            background: rgba(255, 255, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        a {
+            color: #ffd700;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .direct-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .btn {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px 30px;
+            border-radius: 25px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌟 How to Run Thai Fortune Cards App 🌟</h1>
+        
+        <div class="highlight">
+            <strong>Quick Start:</strong> The app works when opened directly, but for the best experience with all features (PWA, offline mode), run it through a web server.
+        </div>
+
+        <div class="direct-link">
+            <a href="index.html" class="btn">🎯 Open App Directly (Basic Mode)</a>
+        </div>
+
+        <h2>For Full Features (Recommended Methods):</h2>
+
+        <div class="method">
+            <h3>Method 1: Python Server (Easiest)</h3>
+            <p>If you have Python installed:</p>
+            <p><strong>Python 3:</strong> <code>python -m http.server 8000</code></p>
+            <p><strong>Python 2:</strong> <code>python -m SimpleHTTPServer 8000</code></p>
+            <p>Then open: <a href="http://localhost:8000">http://localhost:8000</a></p>
+        </div>
+
+        <div class="method">
+            <h3>Method 2: Node.js Server</h3>
+            <p>Install: <code>npm install -g http-server</code></p>
+            <p>Run: <code>http-server -p 8000</code></p>
+            <p>Then open: <a href="http://localhost:8000">http://localhost:8000</a></p>
+        </div>
+
+        <div class="method">
+            <h3>Method 3: Live Server (VS Code)</h3>
+            <p>1. Install "Live Server" extension in VS Code</p>
+            <p>2. Right-click on index.html</p>
+            <p>3. Select "Open with Live Server"</p>
+        </div>
+
+        <div class="method">
+            <h3>Method 4: Online Hosting</h3>
+            <p>Upload to any web hosting service like:</p>
+            <ul>
+                <li><a href="https://netlify.com">Netlify</a> (drag & drop)</li>
+                <li><a href="https://vercel.com">Vercel</a></li>
+                <li><a href="https://pages.github.com">GitHub Pages</a></li>
+            </ul>
+        </div>
+
+        <h2>What Works in Each Mode:</h2>
+
+        <div class="method">
+            <h3>✅ Direct File Mode (file://)</h3>
+            <ul>
+                <li>Daily card picking</li>
+                <li>All card spreads</li>
+                <li>Journal and analytics</li>
+                <li>Meditation timer</li>
+                <li>Theme switching</li>
+                <li>Data persistence</li>
+            </ul>
+        </div>
+
+        <div class="method">
+            <h3>🚀 Server Mode (http://)</h3>
+            <ul>
+                <li>Everything from Direct Mode</li>
+                <li>PWA installation</li>
+                <li>Offline functionality</li>
+                <li>Push notifications</li>
+                <li>Sound effects (if audio files added)</li>
+                <li>Better performance</li>
+            </ul>
+        </div>
+
+        <div class="highlight">
+            <strong>Note:</strong> The app is designed to work perfectly even without sound files or PWA features. All core functionality is available in both modes!
+        </div>
+
+        <div class="direct-link">
+            <a href="index.html" class="btn">🎮 Start Playing Now!</a>
+        </div>
+    </div>
+</body>
+</html> 

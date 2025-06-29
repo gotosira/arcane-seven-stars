@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ไพ่ดวงดาว 7 ดวง - Daily Card Reading</title>
+    <meta name="description" content="Thai Fortune Cards - Seven Wonderful Stars Daily Reading">
+    
+    <!-- PWA Meta Tags (works best when served over HTTP/HTTPS) -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ไพ่ดวงดาว">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="Card Back.png">
+    
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Background Music (optional) -->
+    <audio id="backgroundMusic" loop style="display: none;">
+    </audio>
+    
+    <!-- Sound Effects (optional) -->
+    <audio id="cardFlipSound" preload="none" style="display: none;">
+    </audio>
+    <audio id="successSound" preload="none" style="display: none;">
+    </audio>
+
+    <div class="container">
+        <!-- Settings Panel -->
+        <div class="settings-panel" id="settingsPanel">
+            <div class="settings-content">
+                <h3><i class="fas fa-cog"></i> การตั้งค่า</h3>
+                <div class="setting-item">
+                    <label>
+                        <input type="checkbox" id="soundToggle" checked>
+                        เสียงประกอบ
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label>
+                        <input type="checkbox" id="musicToggle">
+                        เพลงพื้นหลัง
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label>
+                        <input type="checkbox" id="notificationsToggle">
+                        การแจ้งเตือนประจำวัน
+                    </label>
+                </div>
+                <div class="setting-item">
+                    <label>ธีม:</label>
+                    <select id="themeSelect" aria-label="เลือกธีม">
+                        <option value="default">ดั้งเดิม</option>
+                        <option value="dark">มืด</option>
+                        <option value="golden">ทอง</option>
+                        <option value="nature">ธรรมชาติ</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <button class="btn primary" onclick="manualResetDailyCard()" style="width: 100%;">
+                        🔄 รีเซ็ตไพ่ประจำวัน
+                    </button>
+                </div>
+                <button class="btn secondary" onclick="closeSettings()">ปิด</button>
+            </div>
+        </div>
+
+        <header>
+            <div class="header-controls">
+                <button class="icon-btn" onclick="openSettings()" title="เปิดการตั้งค่า">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <button class="icon-btn" onclick="toggleFullscreen()" title="เปิดเต็มจอ">
+                    <i class="fas fa-expand"></i>
+                </button>
+            </div>
+            <h1>🌟 ไพ่ดวงดาว 7 ดวง 🌟</h1>
+            <p class="subtitle">Seven Wonderful Stars - Daily Card Reading</p>
+            <div class="daily-quote" id="dailyQuote">
+                "วันนี้เป็นวันใหม่ที่เต็มไปด้วยโอกาส"
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('daily')">
+                <i class="fas fa-calendar-day"></i> วันนี้
+            </button>
+            <button class="nav-tab" onclick="showTab('spreads')">
+                <i class="fas fa-layer-group"></i> การดูไพ่
+            </button>
+            <button class="nav-tab" onclick="showTab('journal')">
+                <i class="fas fa-book"></i> บันทึก
+            </button>
+            <button class="nav-tab" onclick="showTab('analytics')">
+                <i class="fas fa-chart-bar"></i> สถิติ
+            </button>
+            <button class="nav-tab" onclick="showTab('meditation')">
+                <i class="fas fa-om"></i> ทำสมาธิ
+            </button>
+        </nav>
+
+        <main>
+            <!-- Daily Reading Tab -->
+            <div class="tab-content active" id="dailyTab">
+                <div class="daily-reading">
+                    <h2>การดูไพ่ประจำวัน</h2>
+                    <p class="description">เลือกไพ่หนึ่งใบเพื่อดูดวงประจำวันของคุณ</p>
+                    
+                    <div class="card-status" id="cardStatus">
+                        <p id="statusText">คลิกที่ไพ่ด้านล่างเพื่อดูดวงประจำวัน</p>
+                    </div>
+
+                    <div class="card-grid" id="cardGrid">
+                        <!-- Cards will be generated by JavaScript -->
+                    </div>
+
+                    <div class="revealed-card" id="revealedCard" style="display: none;">
+                        <h3>ไพ่ประจำวันของคุณ</h3>
+                        <div class="card-display">
+                            <img id="dailyCardImage" src="" alt="Daily Card">
+                            <div class="card-info">
+                                <h4 id="cardName"></h4>
+                                <p id="cardMeaning"></p>
+                                <div class="card-actions">
+                                    <button class="btn primary" onclick="shareCard()">
+                                        <i class="fas fa-share"></i> แชร์
+                                    </button>
+                                    <button class="btn secondary" onclick="saveToJournal()">
+                                        <i class="fas fa-save"></i> บันทึก
+                                    </button>
+                                    <button class="btn secondary" onclick="readAloud()">
+                                        <i class="fas fa-volume-up"></i> อ่าน
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Lucky Info moved here -->
+                        <div class="lucky-info" id="luckyInfo" style="display: none;">
+                            <div class="lucky-item">
+                                <i class="fas fa-palette"></i>
+                                <span>สีมงคล: <span id="luckyColor"></span></span>
+                            </div>
+                            <div class="lucky-item">
+                                <i class="fas fa-dice"></i>
+                                <span>เลขมงคล: <span id="luckyNumbers"></span></span>
+                            </div>
+                            <div class="lucky-item">
+                                <i class="fas fa-clock"></i>
+                                <span>เวลาดี: <span id="luckyTime"></span></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Daily Affirmation -->
+                        <div class="affirmation-box">
+                            <h4><i class="fas fa-heart"></i> คำยืนยันประจำวัน</h4>
+                            <p id="dailyAffirmation"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="history-section">
+                    <h2>ประวัติการดูไพ่</h2>
+                    <div class="history-controls">
+                        <button id="resetDailyCard" class="btn primary" onclick="manualResetDailyCard()">🔄 รีเซ็ตไพ่ประจำวัน</button>
+                        <button id="toggleHistory" class="btn secondary">แสดงประวัติ</button>
+                        <button id="clearHistory" class="btn danger">ลบประวัติ</button>
+                        <button id="exportHistory" class="btn primary">ส่งออก PDF</button>
+                    </div>
+                    <div class="history-grid" id="historyGrid" style="display: none;">
+                        <!-- History items will be generated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Spreads Tab -->
+            <div class="tab-content" id="spreadsTab">
+                <div class="spreads-section">
+                    <h2>การดูไพ่แบบต่างๆ</h2>
+                    
+                    <div class="spread-options">
+                        <div class="spread-card" onclick="startSpread('weekly')">
+                            <i class="fas fa-calendar-week"></i>
+                            <h3>การดูไพ่รายสัปดาห์</h3>
+                            <p>ดูไพ่ 7 ใบสำหรับ 7 วัน</p>
+                        </div>
+                        
+                        <div class="spread-card" onclick="startSpread('monthly')">
+                            <i class="fas fa-calendar-alt"></i>
+                            <h3>การดูไพ่รายเดือน</h3>
+                            <p>ดูไพ่ 3 ใบสำหรับเดือนนี้</p>
+                        </div>
+                        
+                        <div class="spread-card" onclick="startSpread('love')">
+                            <i class="fas fa-heart"></i>
+                            <h3>การดูไพ่ความรัก</h3>
+                            <p>ดูไพ่เรื่องความรัก 3 ใบ</p>
+                        </div>
+                        
+                        <div class="spread-card" onclick="startSpread('career')">
+                            <i class="fas fa-briefcase"></i>
+                            <h3>การดูไพ่การงาน</h3>
+                            <p>ดูไพ่เรื่องการงาน 3 ใบ</p>
+                        </div>
+                        
+                        <div class="spread-card" onclick="startSpread('davidstar')">
+                            <i class="fas fa-star-of-david"></i>
+                            <h3>ดาวิดสตาร์</h3>
+                            <p>ดูไพ่ 7 ใบในรูปแบบดาวหกแฉก เชื่อมต่อกับพลังแห่งดวงดาวทั้งหมด</p>
+                        </div>
+                    </div>
+
+                    <div class="spread-result" id="spreadResult" style="display: none;">
+                        <h3 id="spreadTitle"></h3>
+                        <div class="spread-cards" id="spreadCards"></div>
+                        <div class="spread-interpretation" id="spreadInterpretation"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Journal Tab -->
+            <div class="tab-content" id="journalTab">
+                <div class="journal-section">
+                    <h2>บันทึกการดูไพ่</h2>
+                    
+                    <div class="journal-form">
+                        <div class="form-group">
+                            <label for="journalDate">วันที่:</label>
+                            <input type="date" id="journalDate" value="" aria-label="เลือกวันที่">
+                        </div>
+                        <div class="form-group">
+                            <label for="journalCard">ไพ่ที่ได้:</label>
+                            <select id="journalCard" aria-label="เลือกไพ่">
+                                <option value="">เลือกไพ่</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>อารมณ์:</label>
+                            <div class="mood-selector">
+                                <button class="mood-btn" data-mood="very-happy">😄</button>
+                                <button class="mood-btn" data-mood="happy">😊</button>
+                                <button class="mood-btn" data-mood="neutral">😐</button>
+                                <button class="mood-btn" data-mood="sad">😔</button>
+                                <button class="mood-btn" data-mood="very-sad">😢</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>บันทึกส่วนตัว:</label>
+                            <textarea id="journalNotes" placeholder="เขียนความคิดและความรู้สึกของคุณ..."></textarea>
+                        </div>
+                        <button class="btn primary" onclick="saveJournalEntry()">
+                            <i class="fas fa-save"></i> บันทึก
+                        </button>
+                    </div>
+
+                    <div class="journal-entries" id="journalEntries">
+                        <!-- Journal entries will be displayed here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div class="tab-content" id="analyticsTab">
+                <div class="analytics-section">
+                    <h2>สถิติการดูไพ่</h2>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <i class="fas fa-calendar-check"></i>
+                            <h3 id="totalDays">0</h3>
+                            <p>วันที่ดูไพ่</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-star"></i>
+                            <h3 id="favoriteCard">-</h3>
+                            <p>ไพ่ที่ได้บ่อยที่สุด</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-chart-line"></i>
+                            <h3 id="currentStreak">0</h3>
+                            <p>วันติดต่อกัน</p>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-smile"></i>
+                            <h3 id="averageMood">😊</h3>
+                            <p>อารมณ์เฉลี่ย</p>
+                        </div>
+                    </div>
+
+                    <div class="charts-section">
+                        <div class="chart-container">
+                            <h3>ไพ่ที่ได้รับมากที่สุด</h3>
+                            <canvas id="cardFrequencyChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>อารมณ์ในแต่ละวัน</h3>
+                            <canvas id="moodChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="insights-section">
+                        <h3>ข้อมูลเชิงลึก</h3>
+                        <div id="personalInsights">
+                            <!-- AI-generated insights will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Meditation Tab -->
+            <div class="tab-content" id="meditationTab">
+                <div class="meditation-section">
+                    <h2>การทำสมาธิกับไพ่</h2>
+                    
+                    <div class="meditation-options">
+                        <div class="meditation-card" onclick="startMeditation(300)">
+                            <i class="fas fa-clock"></i>
+                            <h3>สมาธิ 5 นาที</h3>
+                            <p>เหมาะสำหรับเริ่มต้น</p>
+                        </div>
+                        <div class="meditation-card" onclick="startMeditation(600)">
+                            <i class="fas fa-clock"></i>
+                            <h3>สมาธิ 10 นาที</h3>
+                            <p>สำหรับความผ่อนคลาย</p>
+                        </div>
+                        <div class="meditation-card" onclick="startMeditation(1200)">
+                            <i class="fas fa-clock"></i>
+                            <h3>สมาธิ 20 นาที</h3>
+                            <p>การทำสมาธิลึก</p>
+                        </div>
+                    </div>
+
+                    <div class="meditation-timer" id="meditationTimer" style="display: none;">
+                        <div class="timer-circle">
+                            <svg class="timer-svg" viewBox="0 0 100 100">
+                                <circle class="timer-bg" cx="50" cy="50" r="45"></circle>
+                                <circle class="timer-progress" cx="50" cy="50" r="45" id="progressCircle"></circle>
+                            </svg>
+                            <div class="timer-display">
+                                <span id="timerMinutes">05</span>:<span id="timerSeconds">00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="meditation-card-focus" id="meditationCardFocus">
+                            <img id="meditationCardImage" src="" alt="Meditation Card">
+                            <p id="meditationGuidance"></p>
+                        </div>
+                        
+                        <div class="timer-controls">
+                            <button class="btn secondary" onclick="pauseMeditation()" id="pauseBtn">
+                                <i class="fas fa-pause"></i> หยุดชั่วคราว
+                            </button>
+                            <button class="btn danger" onclick="stopMeditation()">
+                                <i class="fas fa-stop"></i> หยุด
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 ไพ่ดวงดาว 7 ดวง - สำหรับการบันเทิงเท่านั้น</p>
+            <p class="version">Version 2.0 - Enhanced Edition</p>
+        </footer>
+    </div>
+
+    <!-- Card Search Modal -->
+    <div class="modal" id="cardSearchModal">
+        <div class="modal-content">
+            <h3>ค้นหาความหมายไพ่</h3>
+            <input type="text" id="cardSearchInput" placeholder="ค้นหาชื่อไพ่หรือความหมาย...">
+            <div id="searchResults"></div>
+            <button class="btn secondary" onclick="closeCardSearch()">ปิด</button>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-spinner"></div>
+        <p>กำลังโหลด...</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="script.js"></script>
+    <script src="advanced-features.js"></script>
+</body>
+</html> 
