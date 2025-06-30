@@ -907,30 +907,8 @@ function saveToJournal() {
 
 // Card Spreads
 let currentSpread = null;
-let selectedSpreadCards = [];
-
 function startSpread(type) {
     const spreadTypes = {
-        'weekly': {
-            title: 'การดูไพ่รายสัปดาห์',
-            cards: 7,
-            description: 'ไพ่ 7 ใบสำหรับ 7 วันข้างหน้า'
-        },
-        'monthly': {
-            title: 'การดูไพ่รายเดือน',
-            cards: 3,
-            description: 'อดีต ปัจจุบัน อนาคต'
-        },
-        'love': {
-            title: 'การดูไพ่ความรัก',
-            cards: 3,
-            description: 'ตัวคุณ คู่ของคุณ ความสัมพันธ์'
-        },
-        'career': {
-            title: 'การดูไพ่การงาน',
-            cards: 3,
-            description: 'สถานการณ์ปัจจุบัน อุปสรรค โอกาส'
-        },
         'davidstar': {
             title: 'ดาวิดสตาร์ - ดาวแห่งพลังจักรวาล',
             cards: 7,
@@ -943,72 +921,14 @@ function startSpread(type) {
     if (!spread) return;
     
     currentSpread = spread;
-    selectedSpreadCards = [];
     
-    // Special shuffling interface for David Star
+    // David Star special shuffling interface
     if (spread.layout === 'star') {
         startDavidStarShuffle();
-    } else {
-        // Show card selection interface for other spreads
-        showSpreadCardSelection(spread);
     }
 }
 
-function showSpreadCardSelection(spread) {
-    const resultDiv = document.getElementById('spreadResult');
-    const titleDiv = document.getElementById('spreadTitle');
-    const cardsDiv = document.getElementById('spreadCards');
-    const interpretationDiv = document.getElementById('spreadInterpretation');
-    
-    titleDiv.textContent = spread.title;
-    
-    cardsDiv.innerHTML = `
-        <div class="spread-selection-info">
-            <h4>เลือกไพ่ ${spread.cards} ใบ (เหลือ ${spread.cards - selectedSpreadCards.length} ใบ)</h4>
-            <p>${spread.description}</p>
-        </div>
-        <div class="spread-card-grid">
-            ${Object.keys(CARD_DATA).map(cardFile => `
-                <div class="spread-selection-card ${selectedSpreadCards.includes(cardFile) ? 'selected' : ''}" 
-                     onclick="selectSpreadCard('${cardFile}')">
-                    <img src="Card Back.png" alt="Card Back">
-                    <div class="card-name">${CARD_DATA[cardFile].name}</div>
-                </div>
-            `).join('')}
-        </div>
-        <div class="spread-selection-actions">
-            <button class="btn secondary" onclick="clearSpreadSelection()">เคลียร์</button>
-            <button class="btn primary" onclick="finishSpreadSelection()" ${selectedSpreadCards.length === spread.cards ? '' : 'disabled'}>
-                เสร็จสิ้น
-            </button>
-        </div>
-    `;
-    
-    interpretationDiv.innerHTML = '';
-    resultDiv.style.display = 'block';
-    resultDiv.scrollIntoView({ behavior: 'smooth' });
-}
 
-function selectSpreadCard(cardFile) {
-    if (selectedSpreadCards.includes(cardFile)) {
-        selectedSpreadCards = selectedSpreadCards.filter(card => card !== cardFile);
-    } else if (selectedSpreadCards.length < currentSpread.cards) {
-        selectedSpreadCards.push(cardFile);
-    }
-    
-    showSpreadCardSelection(currentSpread);
-}
-
-function clearSpreadSelection() {
-    selectedSpreadCards = [];
-    showSpreadCardSelection(currentSpread);
-}
-
-function finishSpreadSelection() {
-    if (selectedSpreadCards.length === currentSpread.cards) {
-        displaySpreadResult(currentSpread, selectedSpreadCards);
-    }
-}
 
 // David Star Shuffling System
 let davidStarCards = [];

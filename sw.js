@@ -1,4 +1,4 @@
-const CACHE_NAME = 'thai-fortune-cards-v1';
+const CACHE_NAME = 'thai-fortune-cards-v2';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -7,6 +7,7 @@ const urlsToCache = [
   '/advanced-features.js',
   '/manifest.json',
   '/Card Back.png',
+  '/favicon.ico',
   // Add all card images
   '/กดุมภะ1.png',
   '/กดุมภะ2.png',
@@ -77,6 +78,8 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
+
+
   event.respondWith(
     caches.match(event.request)
       .then(response => {
@@ -84,9 +87,19 @@ self.addEventListener('fetch', event => {
         if (response) {
           return response;
         }
-        return fetch(event.request);
-      }
-    )
+        return fetch(event.request).catch(error => {
+          console.log('Fetch failed for:', event.request.url, error);
+          // Return a fallback response for failed requests
+          if (event.request.destination === 'document') {
+            return caches.match('/index.html');
+          }
+          // For other resources, return a generic error response
+          return new Response('', { 
+            status: 404, 
+            statusText: 'Not Found' 
+          });
+        });
+      })
   );
 });
 

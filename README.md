@@ -13,10 +13,6 @@ A mystical and comprehensive web application for Thai fortune card reading, feat
 - **Lucky Information**: Personalized lucky colors, numbers, and times
 
 ### 🌟 Advanced Fortune Layouts
-- **Weekly Spread**: 7-card reading for the week ahead
-- **Monthly Spread**: Past, present, and future 3-card layout
-- **Love Reading**: Relationship-focused 3-card spread
-- **Career Reading**: Work and opportunity guidance
 - **David Star Layout**: Mystical 7-card Star of David formation with cosmic positioning
 
 ### 🎨 Interactive Experience
@@ -51,12 +47,12 @@ A mystical and comprehensive web application for Thai fortune card reading, feat
 3. Explore lucky information and personal guidance
 4. Return tomorrow for a new reading
 
-### Multi-Card Spreads
+### David Star Spread
 1. Go to "การดูไพ่แบบต่างๆ" (Card Spreads) tab
-2. Choose your preferred layout (Weekly, Love, Career, etc.)
-3. For David Star: Experience the mystical shuffling and picking process
-4. For other layouts: Select cards intuitively from the collection
-5. Receive comprehensive interpretation for each position
+2. Choose the David Star layout
+3. Experience the mystical shuffling and picking process
+4. Pick cards one by one for each star position
+5. Receive comprehensive interpretation for all 7 positions
 
 ### David Star Special Experience
 1. Click "ดาวิดสตาร์" for the most immersive reading
