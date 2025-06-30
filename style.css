@@ -1328,6 +1328,236 @@ main {
     text-align: left;
 }
 
+/* Login Modal Styles */
+.login-modal {
+    max-width: 450px;
+    text-align: center;
+}
+
+.login-subtitle {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+.social-login-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.social-login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.social-login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.social-login-btn.google {
+    background: #4285f4;
+    color: white;
+}
+
+.social-login-btn.google:hover {
+    background: #3367d6;
+}
+
+.social-login-btn.facebook {
+    background: #1877f2;
+    color: white;
+}
+
+.social-login-btn.facebook:hover {
+    background: #166fe5;
+}
+
+.social-login-btn.line {
+    background: #00b900;
+    color: white;
+}
+
+.social-login-btn.line:hover {
+    background: #009a00;
+}
+
+.social-login-btn.email {
+    background: #6c757d;
+    color: white;
+}
+
+.social-login-btn.email:hover {
+    background: #5a6268;
+}
+
+.email-login-form,
+.register-form {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.login-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.login-actions .btn {
+    flex: 1;
+}
+
+.privacy-note {
+    margin: 20px 0;
+    padding: 15px;
+    background: #e8f5e8;
+    border-radius: 8px;
+    color: #2d5016;
+}
+
+/* User Panel Styles */
+.user-panel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100vh;
+    background: var(--card-bg);
+    box-shadow: -5px 0 20px rgba(0,0,0,0.3);
+    z-index: 1001;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+}
+
+.user-panel.open {
+    right: 0;
+}
+
+.user-panel-content {
+    padding: 20px;
+    position: relative;
+}
+
+.user-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    color: white;
+}
+
+.user-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid white;
+    object-fit: cover;
+}
+
+.user-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+}
+
+.user-info p {
+    margin: 0 0 3px 0;
+    opacity: 0.9;
+    font-size: 14px;
+}
+
+.user-info small {
+    opacity: 0.7;
+    font-size: 12px;
+}
+
+.user-stats {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 8px;
+    border-left: 4px solid var(--accent-color);
+}
+
+.stat-item i {
+    color: var(--accent-color);
+    font-size: 20px;
+    width: 24px;
+}
+
+.stat-item span {
+    flex: 1;
+    color: #666;
+    font-size: 14px;
+}
+
+.stat-item strong {
+    color: var(--text-color);
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.user-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.user-actions .btn {
+    width: 100%;
+    justify-content: center;
+    gap: 8px;
+}
+
+.close-panel {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 35px;
+    height: 35px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.close-panel:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.1);
+}
+
 /* Footer */
 footer {
     text-align: center;

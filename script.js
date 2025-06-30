@@ -35,7 +35,9 @@ const translations = {
         luckyColor: "สีมงคล",
         luckyNumbers: "เลขมงคล", 
         luckyTime: "เวลาดี",
-        dailyAffirmation: "คำยืนยันประจำวัน"
+        dailyAffirmation: "คำยืนยันประจำวัน",
+        yourSelectedCard: "ไพ่ที่คุณเลือก",
+        clickForNew: "คลิกเพื่อเลือกไพ่ใหม่"
     },
     en: {
         title: "🌟 Seven Wonderful Stars 🌟",
@@ -70,7 +72,9 @@ const translations = {
         luckyColor: "Lucky Color",
         luckyNumbers: "Lucky Numbers", 
         luckyTime: "Lucky Time",
-        dailyAffirmation: "Daily Affirmation"
+        dailyAffirmation: "Daily Affirmation",
+        yourSelectedCard: "Your Selected Card",
+        clickForNew: "Click to draw a new card"
     }
 };
 
@@ -558,9 +562,303 @@ const toggleHistoryBtn = document.getElementById('toggleHistory');
 const clearHistoryBtn = document.getElementById('clearHistory');
 const historyGrid = document.getElementById('historyGrid');
 
+// User Management System
+let currentUser = null;
+let isUserLoggedIn = false;
+
+const userManager = {
+    init() {
+        this.loadUserFromStorage();
+        this.initSocialProviders();
+    },
+    
+    loadUserFromStorage() {
+        const savedUser = localStorage.getItem('currentUser');
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            isUserLoggedIn = true;
+            this.updateUIForLoggedInUser();
+            this.loadUserData();
+        }
+    },
+    
+    async initSocialProviders() {
+        // Initialize Google Sign-In
+        if (typeof google !== 'undefined') {
+            google.accounts.id.initialize({
+                client_id: "YOUR_GOOGLE_CLIENT_ID", // Replace with actual client ID
+                callback: this.handleGoogleSignIn.bind(this)
+            });
+        }
+        
+        // Initialize Facebook SDK
+        if (typeof FB !== 'undefined') {
+            FB.init({
+                appId: 'YOUR_FACEBOOK_APP_ID', // Replace with actual app ID
+                cookie: true,
+                xfbml: true,
+                version: 'v18.0'
+            });
+        }
+    },
+    
+    async handleGoogleSignIn(response) {
+        try {
+            const userInfo = JSON.parse(atob(response.credential.split('.')[1]));
+            const user = {
+                id: userInfo.sub,
+                name: userInfo.name,
+                email: userInfo.email,
+                avatar: userInfo.picture,
+                provider: 'google',
+                joinDate: new Date().toISOString()
+            };
+            
+            this.loginUser(user);
+        } catch (error) {
+            console.error('Google sign-in error:', error);
+            showNotification('Google sign-in failed', 'error');
+        }
+    },
+    
+    async handleFacebookSignIn() {
+        return new Promise((resolve, reject) => {
+            FB.login((response) => {
+                if (response.authResponse) {
+                    FB.api('/me', { fields: 'name,email,picture' }, (userInfo) => {
+                        const user = {
+                            id: userInfo.id,
+                            name: userInfo.name,
+                            email: userInfo.email,
+                            avatar: userInfo.picture.data.url,
+                            provider: 'facebook',
+                            joinDate: new Date().toISOString()
+                        };
+                        this.loginUser(user);
+                        resolve(user);
+                    });
+                } else {
+                    reject('Facebook login cancelled');
+                }
+            }, { scope: 'email' });
+        });
+    },
+    
+    // Simulated LINE login (requires actual LINE Login setup)
+    async handleLineSignIn() {
+        // This would integrate with LINE Login API
+        showNotification('LINE login will be available soon!', 'info');
+    },
+    
+    async handleEmailSignIn(email, password) {
+        // Simulated email authentication
+        // In production, this would connect to your backend
+        try {
+            const user = {
+                id: 'email_' + Date.now(),
+                name: email.split('@')[0],
+                email: email,
+                avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(email)}&background=random`,
+                provider: 'email',
+                joinDate: new Date().toISOString()
+            };
+            
+            this.loginUser(user);
+            return user;
+        } catch (error) {
+            throw new Error('Email sign-in failed');
+        }
+    },
+    
+    async handleEmailRegister(name, email, password) {
+        // Simulated registration
+        try {
+            const user = {
+                id: 'email_' + Date.now(),
+                name: name,
+                email: email,
+                avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`,
+                provider: 'email',
+                joinDate: new Date().toISOString()
+            };
+            
+            this.loginUser(user);
+            return user;
+        } catch (error) {
+            throw new Error('Registration failed');
+        }
+    },
+    
+    loginUser(user) {
+        currentUser = user;
+        isUserLoggedIn = true;
+        
+        // Save to localStorage
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        
+        // Update UI
+        this.updateUIForLoggedInUser();
+        
+        // Load user's data
+        this.loadUserData();
+        
+        // Close login modal
+        closeLoginModal();
+        
+        showNotification(`Welcome back, ${user.name}!`, 'success');
+    },
+    
+    logoutUser() {
+        currentUser = null;
+        isUserLoggedIn = false;
+        
+        // Clear localStorage
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem(`userData_${currentUser?.id}`);
+        
+        // Update UI
+        this.updateUIForLoggedOutUser();
+        
+        showNotification('Logged out successfully', 'info');
+    },
+    
+    updateUIForLoggedInUser() {
+        const loginBtn = document.getElementById('loginBtn');
+        const userProfileBtn = document.getElementById('userProfileBtn');
+        
+        loginBtn.style.display = 'none';
+        userProfileBtn.style.display = 'block';
+        
+        // Update user panel
+        document.getElementById('userName').textContent = currentUser.name;
+        document.getElementById('userEmail').textContent = currentUser.email;
+        document.getElementById('userProvider').textContent = `via ${currentUser.provider}`;
+        document.getElementById('userAvatar').src = currentUser.avatar;
+        
+        // Update member since
+        const joinDate = new Date(currentUser.joinDate);
+        document.getElementById('userMemberSince').textContent = joinDate.toLocaleDateString();
+    },
+    
+    updateUIForLoggedOutUser() {
+        const loginBtn = document.getElementById('loginBtn');
+        const userProfileBtn = document.getElementById('userProfileBtn');
+        
+        loginBtn.style.display = 'block';
+        userProfileBtn.style.display = 'none';
+        
+        // Close user panel if open
+        const userPanel = document.getElementById('userPanel');
+        userPanel.classList.remove('open');
+    },
+    
+    saveUserData() {
+        if (!isUserLoggedIn) return;
+        
+        const userData = {
+            cardHistory: cardHistory,
+            settings: {
+                language: currentLanguage,
+                theme: document.body.getAttribute('data-theme') || 'default',
+                soundEnabled: document.getElementById('soundToggle')?.checked,
+                musicEnabled: document.getElementById('musicToggle')?.checked,
+                notificationsEnabled: document.getElementById('notificationsToggle')?.checked
+            },
+            stats: {
+                totalCards: cardHistory.length,
+                daysActive: this.calculateDaysActive(),
+                lastVisit: new Date().toISOString()
+            }
+        };
+        
+        localStorage.setItem(`userData_${currentUser.id}`, JSON.stringify(userData));
+    },
+    
+    loadUserData() {
+        if (!isUserLoggedIn) return;
+        
+        const userData = localStorage.getItem(`userData_${currentUser.id}`);
+        if (userData) {
+            const data = JSON.parse(userData);
+            
+            // Load card history
+            if (data.cardHistory) {
+                cardHistory = data.cardHistory;
+                renderHistory();
+            }
+            
+            // Load settings
+            if (data.settings) {
+                if (data.settings.language) {
+                    switchLanguage(data.settings.language);
+                }
+                if (data.settings.theme) {
+                    changeTheme(data.settings.theme);
+                }
+            }
+            
+            // Update user stats in UI
+            this.updateUserStats(data.stats);
+        }
+    },
+    
+    updateUserStats(stats) {
+        if (stats) {
+            document.getElementById('userCardCount').textContent = stats.totalCards || cardHistory.length;
+            document.getElementById('userDaysActive').textContent = stats.daysActive || this.calculateDaysActive();
+        }
+    },
+    
+    calculateDaysActive() {
+        if (cardHistory.length === 0) return 0;
+        
+        const dates = [...new Set(cardHistory.map(card => 
+            new Date(card.date).toDateString()
+        ))];
+        return dates.length;
+    },
+    
+    async syncUserData() {
+        if (!isUserLoggedIn) return;
+        
+        showNotification('Syncing data...', 'info');
+        
+        // Simulate sync process
+        setTimeout(() => {
+            this.saveUserData();
+            showNotification('Data synced successfully!', 'success');
+        }, 1500);
+    },
+    
+    exportUserData() {
+        if (!isUserLoggedIn) return;
+        
+        const userData = {
+            user: currentUser,
+            cardHistory: cardHistory,
+            exportDate: new Date().toISOString()
+        };
+        
+        const dataStr = JSON.stringify(userData, null, 2);
+        const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+        
+        const exportFileDefaultName = `fortune-cards-data-${currentUser.name.replace(/\s+/g, '-')}.json`;
+        
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+        
+        showNotification('Data exported successfully!', 'success');
+    }
+};
+
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
     try {
+        // Initialize user management first
+        userManager.init();
+        
         loadFromStorage();
         
         // Initialize language system
@@ -603,7 +901,7 @@ function loadFromStorage() {
     }
 }
 
-// Save data to localStorage
+// Save data to localStorage (with user support)
 function saveToStorage() {
     const today = new Date().toDateString();
     
@@ -613,39 +911,27 @@ function saveToStorage() {
     }
     
     localStorage.setItem('cardHistory', JSON.stringify(cardHistory));
+    
+    // Also save to user account if logged in
+    if (isUserLoggedIn) {
+        userManager.saveUserData();
+    }
 }
 
-// Check if user has already picked a card today
+// Allow new card selection on every page refresh (no daily restriction)
 function checkDailyCard() {
-    if (hasPickedToday && dailyCard) {
-        statusText.textContent = 'คุณได้เลือกไพ่ประจำวันแล้ว';
+    // Always allow new card selection, but load last session if exists
+    if (dailyCard) {
+        // Show the last picked card but allow picking new ones
+        const t = translations[currentLanguage];
+        statusText.textContent = t.clickCard || 'คลิกที่ไพ่ด้านล่างเพื่อดูดวงประจำวัน';
         
-        // Update the card in the grid to show the picked card
-        const cardElement = document.querySelector('.card.single-card');
-        if (cardElement) {
-            const cardImg = cardElement.querySelector('img');
-            cardImg.src = dailyCard.file;
-            cardImg.alt = CARD_DATA[dailyCard.file].name;
-            cardElement.style.pointerEvents = 'none';
-        }
-        
-        // Set card-grid background to the picked card image
-        const cardGrid = document.getElementById('cardGrid');
-        cardGrid.style.backgroundImage = `url('${dailyCard.file}')`;
-        
-        showRevealedCard(dailyCard);
-        
-        // Show lucky information
-        const luckyInfo = generateLuckyInfo(dailyCard.file);
-        document.getElementById('luckyColor').textContent = luckyInfo.color;
-        document.getElementById('luckyNumbers').textContent = luckyInfo.numbers;
-        document.getElementById('luckyTime').textContent = luckyInfo.time;
-        document.getElementById('luckyInfo').style.display = 'flex';
-        
-        // Show daily affirmation
-        const affirmation = generateAffirmation(dailyCard.name);
-        document.getElementById('dailyAffirmation').textContent = affirmation;
+        // Don't restrict card selection anymore
+        hasPickedToday = false;
     }
+    
+    // Always enable fresh card selection
+    hasPickedToday = false;
 }
 
 // Generate the card grid - single large card
@@ -675,10 +961,13 @@ function generateCardGrid() {
 
 // Handle card click
 function handleCardClick(cardFile, cardElement) {
-    if (hasPickedToday) {
-        showNotification('คุณได้เลือกไพ่ประจำวันแล้ว กรุณากลับมาใหม่พรุ่งนี้', 'warning');
+    // Remove daily restriction - allow multiple picks per session
+    // But add a small delay to prevent spam clicking
+    if (cardElement.classList.contains('clicking')) {
         return;
     }
+    
+    cardElement.classList.add('clicking');
     
     // Disable all cards
     const allCards = document.querySelectorAll('.card');
@@ -701,7 +990,7 @@ function handleCardClick(cardFile, cardElement) {
         };
         
         dailyCard = selectedCard;
-        hasPickedToday = true;
+        // Don't set hasPickedToday = true anymore to allow multiple picks
         
         // Update the card image to show the revealed card
         const cardImg = cardElement.querySelector('img');
@@ -711,16 +1000,26 @@ function handleCardClick(cardFile, cardElement) {
         // Add to history
         cardHistory.unshift(selectedCard);
         
-        // Keep only last 30 records
-        if (cardHistory.length > 30) {
-            cardHistory = cardHistory.slice(0, 30);
+        // Keep only last 50 records (increased for multiple daily picks)
+        if (cardHistory.length > 50) {
+            cardHistory = cardHistory.slice(0, 50);
         }
         
         saveToStorage();
         
-        statusText.textContent = 'คุณได้เลือกไพ่ประจำวันแล้ว';
+        const t = translations[currentLanguage];
+        statusText.innerHTML = `${t.yourSelectedCard} <br><small>🔄 ${t.clickForNew}</small>`;
         showRevealedCard(selectedCard);
         renderHistory();
+        
+        // Reset for next pick after showing result
+        setTimeout(() => {
+            cardElement.classList.remove('clicking');
+            // Regenerate card grid for next pick
+            setTimeout(() => {
+                generateCardGrid();
+            }, 2000);
+        }, 1000);
         
         // Show lucky information
         const luckyInfo = generateLuckyInfo(cardFile);
@@ -1479,4 +1778,148 @@ document.addEventListener('DOMContentLoaded', function() {
             manualResetDailyCard();
         }
     });
-}); 
+});
+
+// Login Modal Functions
+function openLoginModal() {
+    const modal = document.getElementById('loginModal');
+    modal.classList.add('open');
+}
+
+function closeLoginModal() {
+    const modal = document.getElementById('loginModal');
+    modal.classList.remove('open');
+    
+    // Reset forms
+    document.getElementById('emailLoginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'none';
+}
+
+function showEmailLogin() {
+    document.getElementById('emailLoginForm').style.display = 'block';
+    document.getElementById('registerForm').style.display = 'none';
+}
+
+function showRegisterForm() {
+    document.getElementById('registerForm').style.display = 'block';
+    document.getElementById('emailLoginForm').style.display = 'none';
+}
+
+// Social Login Functions
+async function loginWithGoogle() {
+    try {
+        if (typeof google !== 'undefined') {
+            google.accounts.id.prompt();
+        } else {
+            // Fallback demo login
+            const user = {
+                id: 'google_demo_' + Date.now(),
+                name: 'Demo Google User',
+                email: 'demo@gmail.com',
+                avatar: 'https://ui-avatars.com/api/?name=Google+User&background=4285f4&color=fff',
+                provider: 'google',
+                joinDate: new Date().toISOString()
+            };
+            userManager.loginUser(user);
+        }
+    } catch (error) {
+        console.error('Google login error:', error);
+        showNotification('Google login failed', 'error');
+    }
+}
+
+async function loginWithFacebook() {
+    try {
+        if (typeof FB !== 'undefined') {
+            await userManager.handleFacebookSignIn();
+        } else {
+            // Fallback demo login
+            const user = {
+                id: 'facebook_demo_' + Date.now(),
+                name: 'Demo Facebook User',
+                email: 'demo@facebook.com',
+                avatar: 'https://ui-avatars.com/api/?name=Facebook+User&background=1877f2&color=fff',
+                provider: 'facebook',
+                joinDate: new Date().toISOString()
+            };
+            userManager.loginUser(user);
+        }
+    } catch (error) {
+        console.error('Facebook login error:', error);
+        showNotification('Facebook login failed', 'error');
+    }
+}
+
+async function loginWithLine() {
+    try {
+        // Demo LINE login
+        const user = {
+            id: 'line_demo_' + Date.now(),
+            name: 'Demo LINE User',
+            email: 'demo@line.me',
+            avatar: 'https://ui-avatars.com/api/?name=LINE+User&background=00b900&color=fff',
+            provider: 'line',
+            joinDate: new Date().toISOString()
+        };
+        userManager.loginUser(user);
+    } catch (error) {
+        console.error('LINE login error:', error);
+        showNotification('LINE login failed', 'error');
+    }
+}
+
+async function loginWithEmail() {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    if (!email || !password) {
+        showNotification('Please enter email and password', 'warning');
+        return;
+    }
+    
+    try {
+        await userManager.handleEmailSignIn(email, password);
+    } catch (error) {
+        console.error('Email login error:', error);
+        showNotification('Email login failed', 'error');
+    }
+}
+
+async function registerWithEmail() {
+    const name = document.getElementById('registerName').value;
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+    
+    if (!name || !email || !password) {
+        showNotification('Please fill in all fields', 'warning');
+        return;
+    }
+    
+    try {
+        await userManager.handleEmailRegister(name, email, password);
+    } catch (error) {
+        console.error('Registration error:', error);
+        showNotification('Registration failed', 'error');
+    }
+}
+
+// User Panel Functions
+function toggleUserPanel() {
+    const userPanel = document.getElementById('userPanel');
+    userPanel.classList.toggle('open');
+}
+
+function syncUserData() {
+    userManager.syncUserData();
+}
+
+function exportUserData() {
+    userManager.exportUserData();
+}
+
+function logoutUser() {
+    if (confirm('Are you sure you want to logout?')) {
+        userManager.logoutUser();
+        toggleUserPanel();
+    }
+} 

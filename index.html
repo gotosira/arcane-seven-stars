@@ -81,6 +81,12 @@
 
         <header>
             <div class="header-controls">
+                <button class="icon-btn" id="userProfileBtn" onclick="toggleUserPanel()" title="โปรไฟล์ผู้ใช้" style="display: none;">
+                    <i class="fas fa-user"></i>
+                </button>
+                <button class="icon-btn" id="loginBtn" onclick="openLoginModal()" title="เข้าสู่ระบบ">
+                    <i class="fas fa-sign-in-alt"></i>
+                </button>
                 <button class="icon-btn" onclick="openSettings()" title="เปิดการตั้งค่า">
                     <i class="fas fa-cog"></i>
                 </button>
@@ -368,8 +374,138 @@
         </div>
     </div>
 
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content login-modal">
+            <h3><i class="fas fa-sign-in-alt"></i> เข้าสู่ระบบ / Sign In</h3>
+            <p class="login-subtitle">เชื่อมต่อบัญชีของคุณเพื่อเก็บประวัติการดูไพ่และข้อมูลส่วนตัว</p>
+            
+            <div class="social-login-options">
+                <button class="social-login-btn google" onclick="loginWithGoogle()">
+                    <i class="fab fa-google"></i>
+                    <span>Continue with Google</span>
+                </button>
+                
+                <button class="social-login-btn facebook" onclick="loginWithFacebook()">
+                    <i class="fab fa-facebook-f"></i>
+                    <span>Continue with Facebook</span>
+                </button>
+                
+                <button class="social-login-btn line" onclick="loginWithLine()">
+                    <i class="fab fa-line"></i>
+                    <span>Continue with LINE</span>
+                </button>
+
+                <button class="social-login-btn email" onclick="showEmailLogin()">
+                    <i class="fas fa-envelope"></i>
+                    <span>Continue with Email</span>
+                </button>
+            </div>
+
+            <!-- Email Login Form (hidden by default) -->
+            <div id="emailLoginForm" class="email-login-form" style="display: none;">
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input type="email" id="loginEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password:</label>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                </div>
+                <div class="login-actions">
+                    <button class="btn primary" onclick="loginWithEmail()">Sign In</button>
+                    <button class="btn secondary" onclick="showRegisterForm()">Create Account</button>
+                </div>
+            </div>
+
+            <!-- Registration Form (hidden by default) -->
+            <div id="registerForm" class="register-form" style="display: none;">
+                <div class="form-group">
+                    <label for="registerName">Name:</label>
+                    <input type="text" id="registerName" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email:</label>
+                    <input type="email" id="registerEmail" placeholder="your@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password:</label>
+                    <input type="password" id="registerPassword" placeholder="Password" required>
+                </div>
+                <div class="login-actions">
+                    <button class="btn primary" onclick="registerWithEmail()">Create Account</button>
+                    <button class="btn secondary" onclick="showEmailLogin()">Back to Sign In</button>
+                </div>
+            </div>
+            
+            <div class="privacy-note">
+                <small>🔒 ข้อมูลของคุณจะถูกเก็บอย่างปลอดภัยและไม่ถูกแชร์กับบุคคลที่สาม</small>
+            </div>
+            
+            <button class="btn secondary close-modal" onclick="closeLoginModal()">ปิด</button>
+        </div>
+    </div>
+
+    <!-- User Profile Panel -->
+    <div class="user-panel" id="userPanel">
+        <div class="user-panel-content">
+            <div class="user-profile-header">
+                <img id="userAvatar" src="" alt="User Avatar" class="user-avatar">
+                <div class="user-info">
+                    <h4 id="userName">User Name</h4>
+                    <p id="userEmail">user@email.com</p>
+                    <small id="userProvider">Provider</small>
+                </div>
+            </div>
+            
+            <div class="user-stats">
+                <div class="stat-item">
+                    <i class="fas fa-cards"></i>
+                    <span>Cards Drawn</span>
+                    <strong id="userCardCount">0</strong>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-calendar"></i>
+                    <span>Days Active</span>
+                    <strong id="userDaysActive">0</strong>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-star"></i>
+                    <span>Member Since</span>
+                    <strong id="userMemberSince">Today</strong>
+                </div>
+            </div>
+            
+            <div class="user-actions">
+                <button class="btn secondary" onclick="syncUserData()">
+                    <i class="fas fa-sync"></i> Sync Data
+                </button>
+                <button class="btn secondary" onclick="exportUserData()">
+                    <i class="fas fa-download"></i> Export Data
+                </button>
+                <button class="btn danger" onclick="logoutUser()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+            
+            <button class="close-panel" onclick="toggleUserPanel()" title="ปิดแผงผู้ใช้">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
 
 
+
+    <!-- Social Login SDKs -->
+    <!-- Google Sign-In -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <!-- Facebook SDK -->
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+    
+    <!-- Font Awesome for social icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
