@@ -1,3 +1,200 @@
+// Language switching system
+let currentLanguage = localStorage.getItem('language') || 'th';
+
+const translations = {
+    th: {
+        title: "🌟 ไพ่ดวงดาว 7 ดวง 🌟",
+        subtitle: "Seven Wonderful Stars - Daily Card Reading", 
+        // Navigation
+        navDaily: "วันนี้",
+        navSpreads: "การดูไพ่", 
+        navJournal: "บันทึก",
+        navAnalytics: "สถิติ",
+        navMeditation: "ทำสมาธิ",
+        // Settings
+        settings: "การตั้งค่า",
+        soundEffects: "เสียงประกอบ",
+        backgroundMusic: "เพลงพื้นหลัง",
+        notifications: "การแจ้งเตือนประจำวัน",
+        theme: "ธีม",
+        language: "ภาษา",
+        themeDefault: "ดั้งเดิม",
+        themeDark: "มืด", 
+        themeGolden: "ทอง",
+        themeNature: "ธรรมชาติ",
+        resetDaily: "รีเซ็ตไพ่ประจำวัน",
+        close: "ปิด",
+        // Daily Reading
+        dailyReading: "การดูไพ่ประจำวัน",
+        dailyDescription: "เลือกไพ่หนึ่งใบเพื่อดูดวงประจำวันของคุณ",
+        clickCard: "คลิกที่ไพ่ด้านล่างเพื่อดูดวงประจำวัน",
+        yourDailyCard: "ไพ่ประจำวันของคุณ",
+        share: "แชร์",
+        save: "บันทึก", 
+        read: "อ่าน",
+        luckyColor: "สีมงคล",
+        luckyNumbers: "เลขมงคล", 
+        luckyTime: "เวลาดี",
+        dailyAffirmation: "คำยืนยันประจำวัน"
+    },
+    en: {
+        title: "🌟 Seven Wonderful Stars 🌟",
+        subtitle: "Thai Fortune Cards - Daily Reading",
+        // Navigation
+        navDaily: "Today",
+        navSpreads: "Card Spreads",
+        navJournal: "Journal", 
+        navAnalytics: "Analytics",
+        navMeditation: "Meditation",
+        // Settings
+        settings: "Settings",
+        soundEffects: "Sound Effects",
+        backgroundMusic: "Background Music",
+        notifications: "Daily Notifications",
+        theme: "Theme",
+        language: "Language",
+        themeDefault: "Default",
+        themeDark: "Dark",
+        themeGolden: "Golden", 
+        themeNature: "Nature",
+        resetDaily: "Reset Daily Card",
+        close: "Close",
+        // Daily Reading
+        dailyReading: "Daily Card Reading",
+        dailyDescription: "Choose one card to reveal your daily fortune",
+        clickCard: "Click the card below to reveal your daily fortune",
+        yourDailyCard: "Your Daily Card",
+        share: "Share",
+        save: "Save",
+        read: "Read Aloud",
+        luckyColor: "Lucky Color",
+        luckyNumbers: "Lucky Numbers", 
+        luckyTime: "Lucky Time",
+        dailyAffirmation: "Daily Affirmation"
+    }
+};
+
+// Daily quotes rotation
+const dailyQuotes = {
+    th: [
+        "ค้นพบชะตากรรมของคุณ ทีละใบไพ่",
+        "ทุกช่วงเวลามีความเป็นไปได้ไร้ขีดจำกัด",
+        "ปลดล็อกความลึกลับในการเดินทางทางจิตวิญญาณ",
+        "ที่ซึ่งภูมิปัญญาโบราณพบกับข้อมูลเชิงลึกสมัยใหม่",
+        "เปลี่ยนแปลงชีวิตผ่านการนำทางจากจักรวาล",
+        "โอบกอดพลังวิเศษภายในตัวคุณ",
+        "อนาคตของคุณเริ่มต้นด้วยทางเลือกวันนี้"
+    ],
+    en: [
+        "Discover your destiny, one card at a time",
+        "Every moment holds infinite possibilities", 
+        "Unlock the mysteries of your spiritual journey",
+        "Where ancient wisdom meets modern insight",
+        "Transform your life through cosmic guidance",
+        "Embrace the magic within you",
+        "Your future begins with today's choice"
+    ]
+};
+
+function switchLanguage(lang) {
+    currentLanguage = lang;
+    localStorage.setItem('language', lang);
+    updateUILanguage();
+    updateDailyQuote();
+}
+
+function updateUILanguage() {
+    const t = translations[currentLanguage];
+    
+    // Update title and subtitle
+    document.querySelector('h1').innerHTML = t.title;
+    document.querySelector('.subtitle').textContent = t.subtitle;
+    
+    // Update navigation tabs
+    const navTabs = document.querySelectorAll('.nav-tab');
+    const navKeys = ['navDaily', 'navSpreads', 'navJournal', 'navAnalytics', 'navMeditation'];
+    navTabs.forEach((tab, index) => {
+        const icon = tab.querySelector('i').outerHTML;
+        tab.innerHTML = `${icon} ${t[navKeys[index]]}`;
+    });
+    
+    // Update main content sections
+    updateMainContent(t);
+}
+
+function updateMainContent(t) {
+    // Daily Reading Tab
+    const dailyTitle = document.querySelector('#dailyTab h2');
+    if (dailyTitle) dailyTitle.textContent = t.dailyReading;
+    
+    const dailyDesc = document.querySelector('#dailyTab .description');
+    if (dailyDesc) dailyDesc.textContent = t.dailyDescription;
+    
+    const statusText = document.getElementById('statusText');
+    if (statusText && !hasPickedToday) statusText.textContent = t.clickCard;
+    
+    // Update settings
+    const settingsTitle = document.querySelector('.settings-content h3');
+    if (settingsTitle) {
+        settingsTitle.innerHTML = `<i class="fas fa-cog"></i> ${t.settings}`;
+    }
+}
+
+function updateDailyQuote() {
+    const today = new Date();
+    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+    const quotes = dailyQuotes[currentLanguage];
+    const selectedQuote = quotes[dayOfYear % quotes.length];
+    
+    const quoteElement = document.getElementById('dailyQuote');
+    if (quoteElement) {
+        quoteElement.textContent = `"${selectedQuote}"`;
+    }
+}
+
+// English translations for card meanings
+const CARD_TRANSLATIONS = {
+    'กดุมภะ1.png': {
+        name: 'Kumbha (Water Bearer)',
+        meaning: 'Financial fortune, wealth, asset accumulation. Today is a good day for investment and savings.',
+        description: 'This card signifies abundance and prosperity in life. It shows good financial opportunities, asset accumulation, and economic growth.'
+    },
+    'กดุมภะ2.png': {
+        name: 'Kumbha (Water Bearer)',
+        meaning: 'Financial wealth, prosperity, returns from investments. Be careful with spending.',
+        description: 'Wealth and prosperity, showing returns from past efforts and growth in financial stability.'
+    },
+    'กัมมะ1.png': {
+        name: 'Kamma (Karma)',
+        meaning: 'Karma, actions, consequences. Today, do good deeds as you will receive good returns.',
+        description: 'The card of karmic law, showing the consequences of actions that return to us. Good deeds bring happiness, bad deeds bring suffering.'
+    },
+    'กัมมะ2.png': {
+        name: 'Kamma (Karma)',
+        meaning: 'Receiving consequences from past actions. Stay calm and patient, good things are coming.',
+        description: 'Present actions determine the future. Use wisdom in all decisions and actions.'
+    },
+    'เคหัง.png': {
+        name: 'Kehang (Property)',
+        meaning: 'Property, real estate, housing. Today is good for real estate matters.',
+        description: 'Card of property and real estate, signifying investment in housing, land trading, and creating value from assets.'
+    }
+    // Add more translations as needed...
+};
+
+function getCardData(cardFile) {
+    const originalData = CARD_DATA[cardFile];
+    if (currentLanguage === 'en' && CARD_TRANSLATIONS[cardFile]) {
+        return {
+            ...originalData,
+            name: CARD_TRANSLATIONS[cardFile].name,
+            meaning: CARD_TRANSLATIONS[cardFile].meaning,
+            description: CARD_TRANSLATIONS[cardFile].description
+        };
+    }
+    return originalData;
+}
+
 // Enhanced Thai Fortune Cards Configuration
 const CARD_DATA = {
     'กดุมภะ1.png': {
@@ -361,33 +558,30 @@ const toggleHistoryBtn = document.getElementById('toggleHistory');
 const clearHistoryBtn = document.getElementById('clearHistory');
 const historyGrid = document.getElementById('historyGrid');
 
-// Hide loading screen
-function hideLoadingScreen() {
-    const loadingScreen = document.getElementById('loadingScreen');
-    if (loadingScreen) {
-        loadingScreen.style.opacity = '0';
-        setTimeout(() => {
-            loadingScreen.style.display = 'none';
-        }, 500);
-    }
-}
-
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
     try {
         loadFromStorage();
+        
+        // Initialize language system
+        const savedLanguage = localStorage.getItem('language') || 'th';
+        currentLanguage = savedLanguage;
+        document.getElementById('languageSelect').value = savedLanguage;
+        document.getElementById('languageSelect').addEventListener('change', function() {
+            switchLanguage(this.value);
+        });
+        
+        // Update UI with current language
+        updateUILanguage();
+        updateDailyQuote();
+        
         checkDailyCard();
         generateCardGrid();
         setupEventListeners();
         renderHistory();
         
-        // Hide loading screen after everything is loaded
-        setTimeout(hideLoadingScreen, 1000);
-        
     } catch (error) {
         console.error('Error initializing app:', error);
-        // Hide loading screen even if there's an error
-        setTimeout(hideLoadingScreen, 2000);
     }
 });
 
@@ -498,10 +692,11 @@ function handleCardClick(cardFile, cardElement) {
     
     setTimeout(() => {
         // Reveal the selected card
+        const cardData = getCardData(cardFile);
         const selectedCard = {
             file: cardFile,
-            name: CARD_DATA[cardFile].name,
-            meaning: CARD_DATA[cardFile].meaning,
+            name: cardData.name,
+            meaning: cardData.meaning,
             date: new Date().toISOString()
         };
         
@@ -511,7 +706,7 @@ function handleCardClick(cardFile, cardElement) {
         // Update the card image to show the revealed card
         const cardImg = cardElement.querySelector('img');
         cardImg.src = cardFile;
-        cardImg.alt = CARD_DATA[cardFile].name;
+        cardImg.alt = cardData.name;
         
         // Add to history
         cardHistory.unshift(selectedCard);
@@ -550,7 +745,7 @@ function showRevealedCard(card) {
     dailyCardImage.src = card.file;
     
     // Display card name and inner text
-    const cardData = CARD_DATA[card.file];
+    const cardData = getCardData(card.file);
     if (cardData) {
         cardName.innerHTML = `${cardData.name}<br><span style="font-size: 0.8em; color: #666;">${cardData.innerText}</span>`;
         cardMeaning.textContent = cardData.meaning;

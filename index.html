@@ -64,6 +64,13 @@
                     </select>
                 </div>
                 <div class="setting-item">
+                    <label>ภาษา / Language:</label>
+                    <select id="languageSelect" aria-label="เลือกภาษา">
+                        <option value="th">🇹🇭 ไทย (Thai)</option>
+                        <option value="en">🇺🇸 English</option>
+                    </select>
+                </div>
+                <div class="setting-item">
                     <button class="btn primary" onclick="manualResetDailyCard()" style="width: 100%;">
                         🔄 รีเซ็ตไพ่ประจำวัน
                     </button>
@@ -361,11 +368,7 @@
         </div>
     </div>
 
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-spinner"></div>
-        <p>กำลังโหลด...</p>
-    </div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
