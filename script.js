@@ -4,7 +4,7 @@ let currentLanguage = localStorage.getItem('language') || 'th';
 const translations = {
     th: {
         title: "🌟 ไพ่ดวงดาว 7 ดวง 🌟",
-        subtitle: "Seven Wonderful Stars - Daily Card Reading", 
+        subtitle: "🔮 ปลดล็อกความลึกลับในการเดินทางทางจิตวิญญาณ", 
         // Navigation
         navDaily: "วันนี้",
         navSpreads: "การดูไพ่", 
@@ -41,7 +41,7 @@ const translations = {
     },
     en: {
         title: "🌟 Seven Wonderful Stars 🌟",
-        subtitle: "Thai Fortune Cards - Daily Reading",
+        subtitle: "🔮 Unlock the mysteries of your spiritual journey",
         // Navigation
         navDaily: "Today",
         navSpreads: "Card Spreads",
