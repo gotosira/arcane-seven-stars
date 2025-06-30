@@ -1760,16 +1760,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup journal date to today
     document.getElementById('journalDate').value = new Date().toISOString().split('T')[0];
     
-    // Setup daily quote
-    const quotes = [
-        "วันนี้เป็นวันใหม่ที่เต็มไปด้วยโอกาส",
-        "ดวงดาวส่องแสงนำทางให้กับชีวิตคุณ",
-        "ความสุขเริ่มต้นจากการเข้าใจตนเอง",
-        "พลังแห่งจักรวาลอยู่ในมือคุณ",
-        "วันนี้คือโอกาสที่จะเปลี่ยนแปลงชีวิต"
-    ];
-    
-    document.getElementById('dailyQuote').textContent = quotes[Math.floor(Math.random() * quotes.length)];
+    // Setup daily quote (use the new system instead)
+    updateDailyQuote();
     
     // Add keyboard shortcut for reset (Ctrl+R or Cmd+R)
     document.addEventListener('keydown', (e) => {
