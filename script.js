@@ -361,6 +361,90 @@ const toggleHistoryBtn = document.getElementById('toggleHistory');
 const clearHistoryBtn = document.getElementById('clearHistory');
 const historyGrid = document.getElementById('historyGrid');
 
+// Performance optimization utilities
+const performanceUtils = {
+    // Image lazy loading with intersection observer
+    initLazyLoading() {
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            img.removeAttribute('data-src');
+                            img.classList.remove('lazy');
+                            observer.unobserve(img);
+                        }
+                    }
+                });
+            }, {
+                rootMargin: '50px 0px',
+                threshold: 0.1
+            });
+
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                imageObserver.observe(img);
+            });
+        }
+    },
+
+    // Preload critical images
+    preloadCriticalImages() {
+        const criticalImages = ['Card Back.png'];
+        criticalImages.forEach(src => {
+            const link = document.createElement('link');
+            link.rel = 'preload';
+            link.as = 'image';
+            link.href = src;
+            document.head.appendChild(link);
+        });
+    },
+
+    // Preload daily card image when selected
+    preloadDailyCard(cardFile) {
+        if (cardFile && !document.querySelector(`link[href="${cardFile}"]`)) {
+            const link = document.createElement('link');
+            link.rel = 'preload';
+            link.as = 'image';
+            link.href = cardFile;
+            document.head.appendChild(link);
+        }
+    },
+
+    // Optimize image loading with progressive enhancement
+    optimizeImageLoading(imgElement, src) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => {
+                imgElement.src = src;
+                imgElement.classList.add('loaded');
+                resolve();
+            };
+            img.onerror = () => {
+                // Fallback to card back
+                imgElement.src = 'Card Back.png';
+                imgElement.classList.add('loaded');
+                resolve();
+            };
+            img.src = src;
+        });
+    },
+
+    // Debounce function for performance
+    debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+};
+
 // Hide loading screen
 function hideLoadingScreen() {
     const loadingScreen = document.getElementById('loadingScreen');
@@ -372,24 +456,52 @@ function hideLoadingScreen() {
     }
 }
 
-// Initialize the application
+// Initialize the application with performance optimizations
 document.addEventListener('DOMContentLoaded', function() {
     try {
+        // Immediate UI setup
+        performanceUtils.preloadCriticalImages();
+        
+        // Core functionality
         loadFromStorage();
         checkDailyCard();
         generateCardGrid();
         setupEventListeners();
-        renderHistory();
         
-        // Hide loading screen after everything is loaded
-        setTimeout(hideLoadingScreen, 1000);
+        // Initialize lazy loading
+        performanceUtils.initLazyLoading();
+        
+        // Defer non-critical loading
+        requestIdleCallback(() => {
+            renderHistory();
+            preloadNextLikelyCards();
+        }, { timeout: 2000 });
+        
+        // Hide loading screen after core is ready
+        setTimeout(hideLoadingScreen, 800);
         
     } catch (error) {
         console.error('Error initializing app:', error);
         // Hide loading screen even if there's an error
-        setTimeout(hideLoadingScreen, 2000);
+        setTimeout(hideLoadingScreen, 1500);
     }
 });
+
+// Preload cards that are likely to be used next
+function preloadNextLikelyCards() {
+    if (!dailyCard) {
+        // If no daily card yet, preload a few random cards
+        const cardFiles = Object.keys(CARD_DATA);
+        const randomCards = [];
+        for (let i = 0; i < 3; i++) {
+            const randomIndex = Math.floor(Math.random() * cardFiles.length);
+            randomCards.push(cardFiles[randomIndex]);
+        }
+        randomCards.forEach(cardFile => {
+            performanceUtils.preloadDailyCard(cardFile);
+        });
+    }
+}
 
 // Load data from localStorage
 function loadFromStorage() {
@@ -409,16 +521,24 @@ function loadFromStorage() {
     }
 }
 
-// Save data to localStorage
-function saveToStorage() {
-    const today = new Date().toDateString();
-    
-    if (dailyCard) {
-        localStorage.setItem('dailyCard', JSON.stringify(dailyCard));
-        localStorage.setItem('dailyCardDate', today);
+// Save data to localStorage with debouncing for performance
+const debouncedSaveToStorage = performanceUtils.debounce(() => {
+    try {
+        const today = new Date().toDateString();
+        
+        if (dailyCard) {
+            localStorage.setItem('dailyCard', JSON.stringify(dailyCard));
+            localStorage.setItem('dailyCardDate', today);
+        }
+        
+        localStorage.setItem('cardHistory', JSON.stringify(cardHistory));
+    } catch (error) {
+        console.error('Failed to save to localStorage:', error);
     }
-    
-    localStorage.setItem('cardHistory', JSON.stringify(cardHistory));
+}, 300);
+
+function saveToStorage() {
+    debouncedSaveToStorage();
 }
 
 // Check if user has already picked a card today
@@ -479,12 +599,15 @@ function generateCardGrid() {
     }
 }
 
-// Handle card click
+// Handle card click with optimized loading
 function handleCardClick(cardFile, cardElement) {
     if (hasPickedToday) {
         showNotification('คุณได้เลือกไพ่ประจำวันแล้ว กรุณากลับมาใหม่พรุ่งนี้', 'warning');
         return;
     }
+    
+    // Preload the card image immediately
+    performanceUtils.preloadDailyCard(cardFile);
     
     // Disable all cards
     const allCards = document.querySelectorAll('.card');
@@ -496,8 +619,9 @@ function handleCardClick(cardFile, cardElement) {
     // Animate card flip
     cardElement.classList.add('flipped');
     
-    setTimeout(() => {
-        // Reveal the selected card
+    // Use optimized image loading
+    setTimeout(async () => {
+        // Reveal the selected card with progressive loading
         const selectedCard = {
             file: cardFile,
             name: CARD_DATA[cardFile].name,
@@ -545,9 +669,15 @@ function handleCardClick(cardFile, cardElement) {
     }, 800);
 }
 
-// Show the revealed card
-function showRevealedCard(card) {
-    dailyCardImage.src = card.file;
+// Show the revealed card with optimized loading
+async function showRevealedCard(card) {
+    // Optimized image loading
+    try {
+        await performanceUtils.optimizeImageLoading(dailyCardImage, card.file);
+    } catch (error) {
+        console.error('Failed to load daily card image:', error);
+        dailyCardImage.src = 'Card Back.png';
+    }
     
     // Display card name and inner text
     const cardData = CARD_DATA[card.file];
