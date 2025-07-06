@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Cache - Thai Fortune Cards</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            display: block;
+            width: 100%;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .success {
+            background: rgba(76, 175, 80, 0.3);
+        }
+        .info {
+            background: rgba(33, 150, 243, 0.3);
+        }
+        .warning {
+            background: rgba(255, 152, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Cache Clearing Utility</h1>
+        <p>This utility will help clear all cached data to fix Google API issues in demo mode.</p>
+        
+        <div id="status" class="status info">
+            Ready to clear caches...
+        </div>
+        
+        <button onclick="clearAllCaches()">🗑️ Clear All Caches</button>
+        <button onclick="clearServiceWorker()">⚙️ Clear Service Worker</button>
+        <button onclick="clearLocalStorage()">💾 Clear Local Storage</button>
+        <button onclick="clearEverything()">🧨 Clear Everything</button>
+        
+        <hr style="margin: 30px 0;">
+        
+        <h3>Manual Cache Clearing Instructions:</h3>
+        <div style="text-align: left; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px;">
+            <p><strong>Chrome/Edge:</strong></p>
+            <ol>
+                <li>Press <code>Ctrl+Shift+Delete</code> (or <code>Cmd+Shift+Delete</code> on Mac)</li>
+                <li>Select "All time" as time range</li>
+                <li>Check "Cached images and files"</li>
+                <li>Check "Cookies and other site data"</li>
+                <li>Click "Clear data"</li>
+            </ol>
+            
+            <p><strong>Firefox:</strong></p>
+            <ol>
+                <li>Press <code>Ctrl+Shift+Delete</code></li>
+                <li>Select "Everything" as time range</li>
+                <li>Check "Cache" and "Cookies"</li>
+                <li>Click "Clear Now"</li>
+            </ol>
+        </div>
+        
+        <button onclick="goToApp()" style="background: #2196F3; margin-top: 20px;">
+            🎯 Go to App (After Clearing Cache)
+        </button>
+    </div>
+
+    <script>
+        function updateStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+
+        async function clearAllCaches() {
+            try {
+                updateStatus('Clearing browser caches...', 'info');
+                
+                // Clear all caches
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(
+                        cacheNames.map(cacheName => caches.delete(cacheName))
+                    );
+                    console.log('All caches cleared');
+                }
+                
+                updateStatus('✅ Browser caches cleared successfully!', 'success');
+            } catch (error) {
+                console.error('Error clearing caches:', error);
+                updateStatus('❌ Error clearing caches: ' + error.message, 'warning');
+            }
+        }
+
+        async function clearServiceWorker() {
+            try {
+                updateStatus('Clearing service worker...', 'info');
+                
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    await Promise.all(
+                        registrations.map(registration => registration.unregister())
+                    );
+                    console.log('Service workers unregistered');
+                }
+                
+                updateStatus('✅ Service worker cleared successfully!', 'success');
+            } catch (error) {
+                console.error('Error clearing service worker:', error);
+                updateStatus('❌ Error clearing service worker: ' + error.message, 'warning');
+            }
+        }
+
+        function clearLocalStorage() {
+            try {
+                updateStatus('Clearing local storage...', 'info');
+                
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                updateStatus('✅ Local storage cleared successfully!', 'success');
+            } catch (error) {
+                console.error('Error clearing local storage:', error);
+                updateStatus('❌ Error clearing local storage: ' + error.message, 'warning');
+            }
+        }
+
+        async function clearEverything() {
+            try {
+                updateStatus('Clearing everything...', 'info');
+                
+                // Clear all types of data
+                await clearAllCaches();
+                await clearServiceWorker();
+                clearLocalStorage();
+                
+                // Try to clear IndexedDB if available
+                if ('indexedDB' in window) {
+                    try {
+                        indexedDB.deleteDatabase('thai-fortune-cards');
+                    } catch (e) {
+                        console.log('IndexedDB not available or already cleared');
+                    }
+                }
+                
+                updateStatus('✅ Everything cleared successfully! Please refresh the page and try the app again.', 'success');
+                
+                // Auto redirect after 3 seconds
+                setTimeout(() => {
+                    updateStatus('Redirecting to app in 3 seconds...', 'info');
+                    setTimeout(() => window.location.href = './index.html', 3000);
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Error clearing everything:', error);
+                updateStatus('❌ Error clearing data: ' + error.message, 'warning');
+            }
+        }
+
+        function goToApp() {
+            window.location.href = './index.html';
+        }
+    </script>
+</body>
+</html> 

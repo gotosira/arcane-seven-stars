@@ -1,4 +1,4 @@
-const CACHE_NAME = 'thai-fortune-cards-v2';
+const CACHE_NAME = 'thai-fortune-cards-v3-no-google';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -78,7 +78,18 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('fetch', event => {
-
+  // Block all Google API calls in demo mode to prevent 403 errors
+  if (event.request.url.includes('accounts.google.com') || 
+      event.request.url.includes('googleapis.com/auth') ||
+      event.request.url.includes('gsi/client') ||
+      event.request.url.includes('YOUR_GOOGLE_CLIENT_ID')) {
+    console.log('🛡️ Blocked Google API call in demo mode:', event.request.url);
+    event.respondWith(new Response('', { 
+      status: 204, 
+      statusText: 'Blocked in demo mode' 
+    }));
+    return;
+  }
 
   event.respondWith(
     caches.match(event.request)

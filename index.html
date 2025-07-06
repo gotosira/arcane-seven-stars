@@ -6,6 +6,14 @@
     <title>ไพ่ดวงดาว 7 ดวง - Daily Card Reading</title>
     <meta name="description" content="Thai Fortune Cards - Seven Wonderful Stars Daily Reading">
     
+    <!-- Performance optimizations -->
+    <link rel="preload" href="Card Back.png" as="image">
+    <link rel="preload" href="style.css" as="style">
+    <link rel="preload" href="script.js" as="script">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    
     <!-- PWA Meta Tags (works best when served over HTTP/HTTPS) -->
     <meta name="theme-color" content="#667eea">
     <meta name="mobile-web-app-capable" content="yes">
@@ -129,6 +137,17 @@
                     
                     <div class="card-status" id="cardStatus">
                         <p id="statusText">คลิกที่ไพ่ด้านล่างเพื่อดูดวงประจำวัน</p>
+                        <div class="shuffle-controls" id="shuffleControls">
+                            <button class="btn primary shuffle-btn" id="shuffleBtn" onclick="shuffleCards()">
+                                <i class="fas fa-sync-alt"></i> สับไพ่ 9 ครั้ง
+                            </button>
+                            <div class="shuffle-counter" id="shuffleCounter" style="display: none;">
+                                <span>กำลังสับไพ่... <span id="shuffleCount">0</span>/9</span>
+                                <div class="shuffle-progress" id="shuffleProgress">
+                                    <div class="shuffle-progress-bar" id="shuffleProgressBar"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="card-grid" id="cardGrid">
@@ -172,10 +191,61 @@
                             </div>
                         </div>
                         
+                        <!-- Star Info (ดาวเสวย และ ดาวแทรก) - Thai Astrological Time System -->
+                        <div class="lucky-info" id="starInfo" style="display: none;">
+                            <div class="lucky-item">
+                                <i class="fas fa-star"></i>
+                                <span>ดาวเสวย: <span id="starSevy"></span></span>
+                            </div>
+                            <div class="lucky-item">
+                                <i class="fas fa-star-half-alt"></i>
+                                <span>ดาวแทรก: <span id="starTaek"></span></span>
+                            </div>
+                            <div class="lucky-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>วัน<span id="starDay"></span> <span id="starPeriod"></span> เวลา <span id="starTime"></span></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Star System Explanation -->
+                        <div class="star-explanation" id="starExplanation" style="display: none;">
+                            <h5><i class="fas fa-info-circle"></i> นาฬิกายามไทย</h5>
+                            <p><strong>ดาวเสวย (เลขไพ่)</strong>: แสดงพลังงานหลักของไพ่ที่คุณได้รับ</p>
+                            <p><strong>ดาวแทรก (เลขยาม)</strong>: แสดงพลังงานของยามในวันและเวลาปัจจุบัน ตามระบบนาฬิกายามไทยโบราณ</p>
+                            <p><em>การผสมผสานของดาวเสวยและดาวแทรกจะแสดงพลังงานรวมสำหรับการตีความที่ละเอียดขึ้น</em></p>
+                        </div>
+                        
                         <!-- Daily Affirmation -->
                         <div class="affirmation-box">
                             <h4><i class="fas fa-heart"></i> คำยืนยันประจำวัน</h4>
                             <p id="dailyAffirmation"></p>
+                        </div>
+                        
+                        <!-- Deep Interpretation -->
+                        <div class="deep-interpretation-box" id="deepInterpretation" style="display: none;">
+                            <h4><i class="fas fa-star"></i> 💫 การตีความเชิงลึก</h4>
+                            <div class="interpretation-sections">
+                                <div class="interpretation-section">
+                                    <h5>🔮 ความหมายทางจิตวิญญาณ</h5>
+                                    <p id="spiritualMeaning"></p>
+                                </div>
+                                <div class="interpretation-section">
+                                    <h5>💼 ด้านการงานและการเงิน</h5>
+                                    <p id="careerMeaning"></p>
+                                </div>
+                                <div class="interpretation-section">
+                                    <h5>❤️ ด้านความรักและความสัมพันธ์</h5>
+                                    <p id="loveMeaning"></p>
+                                </div>
+                                <div class="interpretation-section">
+                                    <h5>🌟 คำแนะนำสำหรับวันนี้</h5>
+                                    <p id="dailyAdvice"></p>
+                                </div>
+                                <div class="interpretation-section">
+                                    <h5>⚠️ สิ่งที่ควรระวัง</h5>
+                                    <p id="warningAdvice"></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -386,6 +456,9 @@
                     <span>Continue with Google</span>
                 </button>
                 
+                <!-- Google Sign-In Button (for production) -->
+                <div id="googleSignInButton" style="display: none;"></div>
+                
                 <button class="social-login-btn facebook" onclick="loginWithFacebook()">
                     <i class="fab fa-facebook-f"></i>
                     <span>Continue with Facebook</span>
@@ -446,6 +519,23 @@
         </div>
     </div>
 
+    <!-- Card Modal -->
+    <div class="card-modal" id="cardModal">
+        <button class="card-modal-close" onclick="closeCardModal()">&times;</button>
+        <div class="card-modal-content">
+            <img class="card-modal-image" id="cardModalImage" src="" alt="">
+            <div class="card-modal-info">
+                <h3 class="card-modal-title" id="cardModalTitle"></h3>
+                <p class="card-modal-inner-text" id="cardModalInnerText"></p>
+                <p class="card-modal-meaning" id="cardModalMeaning"></p>
+                <div class="card-modal-description">
+                    <div class="card-modal-description-title">คำอธิบาย:</div>
+                    <div id="cardModalDescription"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- User Profile Panel -->
     <div class="user-panel" id="userPanel">
         <div class="user-panel-content">
@@ -494,11 +584,13 @@
         </div>
     </div>
 
-
-
     <!-- Social Login SDKs -->
-    <!-- Google Sign-In -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- Google Sign-In disabled in demo mode to prevent 403 errors -->
+    <script>
+        console.log('🎯 Demo mode active - Google Sign-In script loading disabled to prevent client_id errors');
+        // Google Sign-In script will only be loaded when demo mode is disabled
+        // and proper OAuth configuration is complete
+    </script>
     
     <!-- Facebook SDK -->
     <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>

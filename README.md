@@ -12,6 +12,13 @@ A mystical and comprehensive web application for Thai fortune card reading, feat
 - **Spiritual Guidance**: Deep interpretations and life insights for each card
 - **Lucky Information**: Personalized lucky colors, numbers, and times
 
+### 🔐 User Authentication & Sync
+- **Google Login**: Secure OAuth 2.0 authentication with Google accounts
+- **User Profiles**: Personal account management with avatar and stats
+- **Data Synchronization**: Automatic saving of reading history and preferences
+- **Multi-Device Access**: Access your readings from any device
+- **Privacy Protection**: Secure data handling with no third-party sharing
+
 ### 🌟 Advanced Fortune Layouts
 - **David Star Layout**: Mystical 7-card Star of David formation with cosmic positioning
 
