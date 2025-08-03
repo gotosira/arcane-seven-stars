@@ -52,7 +52,36 @@ const translations = {
         or: "หรือ",
         // Reset button
         resetDaily: "รีเซ็ต",
-        resetDailyTooltip: "รีเซ็ตไพ่ประจำวันเพื่อเลือกใหม่"
+        resetDailyTooltip: "รีเซ็ตไพ่ประจำวันเพื่อเลือกใหม่",
+        // Numerical table
+        numericalTableTitle: "📊 ตารางตัวเลขไพ่ 3 ใบ",
+        numericalTableExplanation: "ตารางแสดงการเรียงลำดับตัวเลขจากไพ่ทั้ง 3 ใบ และเลขที่เน้นคือยามปัจจุบัน",
+        currentYam: "ยามปัจจุบัน",
+        yamHighlightNote: "เลขที่เน้นสีแดง 🌟 คือเลขที่ตรงกับยามปัจจุบัน",
+        // Star Sevy-Taek
+        navStarSevy: "ดาวเสวยแทรก",
+        starSevyTitle: "ตำราดาวเสวยดาวแทรก",
+        starSevySubtitle: "ศาสตร์แห่งดาว 7 ดวง - อาทิตย์ จันทร์ อังคาร พุธ พฤหัส ศุกร์ เสาร์",
+        starSevyDefinition: "ดาวที่อยู่ในตำแหน่งที่มีอิทธิพลเสริมพลังให้กับบุคคล",
+        starTaekDefinition: "ดาวที่อยู่ในตำแหน่งที่สร้างอุปสรรคหรือความท้าทายให้กับบุคคล",
+        starCalculationTitle: "คำนวณดาวเสวยดาวแทรก",
+        birthDate: "วันเกิด",
+        birthTime: "เวลาเกิด",
+        calculate: "คำนวณ",
+        starSevy: "ดาวเสวย",
+        starTaek: "ดาวแทรก",
+        interpretation: "ตีความดาวเสวยดาวแทรก",
+        manualSelectionTitle: "เลือกดาวเสวยดาวแทรกด้วยตนเอง",
+        selectSevyStar: "เลือกดาวเสวย",
+        selectTaekStar: "เลือกดาวแทรก",
+        interpretationResult: "ผลการตีความ",
+        guideTitle: "คู่มือการใช้งาน",
+        autoCalculationGuide: "การคำนวณอัตโนมัติ",
+        autoCalculationDesc: "ใส่วันเกิดและเวลาเกิดเพื่อให้ระบบคำนวณดาวเสวยและดาวแทรกให้อัตโนมัติ",
+        manualSelectionGuide: "การเลือกด้วยตนเอง",
+        manualSelectionDesc: "หากทราบดาวเสวยและดาวแทรกแล้ว สามารถเลือกจาก dropdown เพื่อดูการตีความได้ทันที",
+        interpretationGuide: "การตีความ",
+        interpretationDesc: "ระบบจะแสดงการตีความตามตำราโบราณไทยเมื่อดาวเสวยกระทบกับดาวแทรก"
     },
     en: {
         title: "🌟 Seven Wonderful Stars 🌟",
@@ -104,7 +133,36 @@ const translations = {
         or: "or",
         // Reset button
         resetDaily: "Reset",
-        resetDailyTooltip: "Reset daily card to pick a new one"
+        resetDailyTooltip: "Reset daily card to pick a new one",
+        // Numerical table
+        numericalTableTitle: "📊 3-Card Numerical Table",
+        numericalTableExplanation: "Table showing numerical sequences from all 3 cards with current Yam numbers highlighted",
+        currentYam: "Current Yam",
+        yamHighlightNote: "Red highlighted numbers 🌟 match the current Yam",
+        // Star Sevy-Taek
+        navStarSevy: "Star Sevy-Taek",
+        starSevyTitle: "Star Sevy-Taek System",
+        starSevySubtitle: "Science of 7 Stars - Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn",
+        starSevyDefinition: "Sevy Star: A star positioned to enhance and empower the individual",
+        starTaekDefinition: "Taek Star: A star positioned to create obstacles or challenges for the individual",
+        starCalculationTitle: "Calculate Star Sevy-Taek",
+        birthDate: "Birth Date",
+        birthTime: "Birth Time",
+        calculate: "Calculate",
+        starSevy: "Sevy Star",
+        starTaek: "Taek Star",
+        interpretation: "Star Sevy-Taek Interpretation",
+        manualSelectionTitle: "Manual Star Sevy-Taek Selection",
+        selectSevyStar: "Select Sevy Star",
+        selectTaekStar: "Select Taek Star",
+        interpretationResult: "Interpretation Result",
+        guideTitle: "User Guide",
+        autoCalculationGuide: "Automatic Calculation",
+        autoCalculationDesc: "Enter birth date and time for automatic star calculations",
+        manualSelectionGuide: "Manual Selection",
+        manualSelectionDesc: "If you know your stars, select from dropdowns for instant interpretation",
+        interpretationGuide: "Interpretation",
+        interpretationDesc: "System displays interpretation based on ancient Thai astrological texts when Sevy and Taek stars interact"
     }
 };
 
@@ -218,6 +276,17 @@ function updateThreeCardsLanguage(t) {
     if (resetDailyBtn) {
         resetDailyBtn.innerHTML = `<i class="fas fa-redo"></i> ${t.resetDaily}`;
         resetDailyBtn.title = t.resetDailyTooltip;
+    }
+    
+    // Update numerical table elements
+    const numericalTableTitle = document.getElementById('numericalTableTitle');
+    const numericalTableExplanation = document.getElementById('numericalTableExplanation');
+    
+    if (numericalTableTitle) {
+        numericalTableTitle.textContent = t.numericalTableTitle;
+    }
+    if (numericalTableExplanation) {
+        numericalTableExplanation.textContent = t.numericalTableExplanation;
     }
 }
 
@@ -1235,6 +1304,7 @@ function checkDailyCard() {
     }
     
     if (dailyCard && hasPickedToday) {
+        console.log('=== checkDailyCard: Showing already picked card ===');
         // Show the already picked card
         const t = translations[currentLanguage];
         statusText.textContent = currentLanguage === 'th' ? 'คุณได้เลือกไพ่ประจำวันแล้ว' : 'You have already picked your daily card';
@@ -1259,7 +1329,11 @@ function checkDailyCard() {
             starPeriod: document.getElementById('starPeriod'),
             starTime: document.getElementById('starTime'),
             starInfo: document.getElementById('starInfo'),
-            starExplanation: document.getElementById('starExplanation')
+            starExplanation: document.getElementById('starExplanation'),
+            starSevyTaekInterpretation: document.getElementById('starSevyTaekInterpretation'),
+            starInterpretationContent: document.getElementById('starInterpretationContent'),
+            starDetailedInterpretation: document.getElementById('starDetailedInterpretation'),
+            detailedInterpretationContent: document.getElementById('detailedInterpretationContent')
         };
         
         // Display star information
@@ -1269,9 +1343,110 @@ function checkDailyCard() {
         if (starElements.starPeriod) starElements.starPeriod.textContent = yamInfo.periodName;
         if (starElements.starTime) starElements.starTime.textContent = yamInfo.time;
         
+        // Display Star Sevy-Taek interpretation from the database
+        const sevyStarKey = getStarKeyFromNumber(cardNumber);
+        const taekStarKey = getStarKeyFromNumber(yamInfo.yamNumber);
+        const interpretationKey = `${sevyStarKey}-${taekStarKey}`;
+        
+        // Debug info
+        console.log(`Card number: ${cardNumber}, Yam number: ${yamInfo.yamNumber}`);
+        console.log(`Star combination: ${sevyStarKey}-${taekStarKey}`);
+        console.log(`Looking for interpretation key: ${interpretationKey}`);
+        console.log(`STAR_SEVY_TAEK_DATABASE loaded: ${typeof STAR_SEVY_TAEK_DATABASE !== 'undefined'}`);
+        if (typeof STAR_SEVY_TAEK_DATABASE !== 'undefined') {
+            console.log(`Total interpretations available: ${Object.keys(STAR_SEVY_TAEK_DATABASE.interpretations).length}`);
+            console.log(`Key exists: ${interpretationKey in STAR_SEVY_TAEK_DATABASE.interpretations}`);
+        }
+        
+        if (typeof STAR_SEVY_TAEK_DATABASE !== 'undefined' && STAR_SEVY_TAEK_DATABASE.interpretations[interpretationKey]) {
+            const interpretation = STAR_SEVY_TAEK_DATABASE.interpretations[interpretationKey];
+            console.log(`✅ Found interpretation (${interpretation.length} chars)`);
+            
+            // First section: Basic star info
+            if (starElements.starInterpretationContent) {
+                starElements.starInterpretationContent.innerHTML = `
+                    <div class="star-combination-daily">
+                        <h6>${getStarName(cardNumber)}เสวย - ${getStarName(yamInfo.yamNumber)}แทรก</h6>
+                        <div class="star-details-daily">
+                            <span class="sevy-detail">
+                                <i class="fas fa-star text-golden"></i> 
+                                ดาวเสวย: ${getStarName(cardNumber)} (${cardNumber})
+                            </span>
+                            <span class="taek-detail">
+                                <i class="fas fa-star-half-alt text-red"></i> 
+                                ดาวแทรก: ${getStarName(yamInfo.yamNumber)} (${yamInfo.yamNumber})
+                            </span>
+                        </div>
+                        <div class="star-timing-info">
+                            <p><strong>ยาม:</strong> ${yamInfo.periodName} (${yamInfo.time})</p>
+                            <p><strong>วันที่:</strong> ${yamInfo.dayName}</p>
+                        </div>
+                    </div>
+                `;
+            }
+            if (starElements.starSevyTaekInterpretation) starElements.starSevyTaekInterpretation.classList.remove('hidden');
+            
+            // Second section: Detailed interpretation from scripture
+            if (starElements.detailedInterpretationContent) {
+                starElements.detailedInterpretationContent.innerHTML = `
+                    <div class="detailed-star-interpretation">
+                        <div class="scripture-reference">
+                            <h6><i class="fas fa-scroll"></i> ${getStarName(cardNumber)}เสวย - ${getStarName(yamInfo.yamNumber)}แทรก</h6>
+                        </div>
+                        <div class="interpretation-text">
+                            <p><strong>ความหมายตามตำรา:</strong></p>
+                            <div class="scripture-content">
+                                <p style="white-space: pre-wrap; line-height: 1.8;">${interpretation}</p>
+                            </div>
+                        </div>
+                        <div class="interpretation-guidance">
+                            <h6><i class="fas fa-lightbulb"></i> คำแนะนำ</h6>
+                            <p>การตีความนี้เป็นไปตามตำราโบราณไทย ควรใช้เป็นแนวทางในการพิจารณาเหตุการณ์ที่อาจเกิดขึ้น และเตรียมตัวรับมือกับสถานการณ์ต่างๆ ได้อย่างเหมาะสม</p>
+                        </div>
+                    </div>
+                `;
+            }
+            if (starElements.starDetailedInterpretation) starElements.starDetailedInterpretation.classList.remove('hidden');
+            
+        } else {
+            console.warn('Star Sevy-Taek interpretation not found for key:', interpretationKey);
+            // Show a fallback message in both sections
+            if (starElements.starInterpretationContent) {
+                starElements.starInterpretationContent.innerHTML = `
+                    <div class="star-combination-daily">
+                        <h6>${getStarName(cardNumber)}เสวย - ${getStarName(yamInfo.yamNumber)}แทรก</h6>
+                        <div class="star-details-daily">
+                            <span class="sevy-detail">
+                                <i class="fas fa-star text-golden"></i> 
+                                ดาวเสวย: ${getStarName(cardNumber)} (${cardNumber})
+                            </span>
+                            <span class="taek-detail">
+                                <i class="fas fa-star-half-alt text-red"></i> 
+                                ดาวแทรก: ${getStarName(yamInfo.yamNumber)} (${yamInfo.yamNumber})
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }
+            if (starElements.starSevyTaekInterpretation) starElements.starSevyTaekInterpretation.classList.remove('hidden');
+            
+            if (starElements.detailedInterpretationContent) {
+                starElements.detailedInterpretationContent.innerHTML = `
+                    <div class="detailed-star-interpretation">
+                        <p><strong>ไม่พบการตีความสำหรับการรวมกันของดาวนี้</strong></p>
+                        <p><em>กรุณาตรวจสอบฐานข้อมูลตำรา</em></p>
+                    </div>
+                `;
+            }
+            if (starElements.starDetailedInterpretation) starElements.starDetailedInterpretation.classList.remove('hidden');
+        }
+        
         // Show star info sections
         if (starElements.starInfo) starElements.starInfo.style.display = 'flex';
         if (starElements.starExplanation) starElements.starExplanation.style.display = 'block';
+        
+        // Star influence result section removed per user request
+        // Only showing the star interpretation sections (starSevyTaekInterpretation and starDetailedInterpretation)
         
         // Show daily affirmation
         const affirmation = generateAffirmation(dailyCard.name);
@@ -1393,8 +1568,40 @@ function handleCardClick(cardFile, cardElement) {
         cardImg.src = cardFile;
         cardImg.alt = cardData.name;
         
-        // Add to history
-        cardHistory.unshift(selectedCard);
+        // Get current yam info and star influence for history
+        const currentYamInfo = calculateCurrentYam();
+        const currentStarInfluence = calculateStarInfluence(cardFile);
+        
+        // Enhanced card data with comprehensive star influence information
+        const enhancedCard = {
+            ...selectedCard,
+            yamInfo: {
+                yamNumber: currentYamInfo.yamNumber,
+                dayName: currentYamInfo.dayName,
+                periodName: currentYamInfo.periodName,
+                time: currentYamInfo.time,
+                periodType: currentYamInfo.periodType,
+                yamSequence: currentYamInfo.yamSequence,
+                currentTime: currentYamInfo.currentTime,
+                thaiDay: currentYamInfo.thaiDay
+            },
+            starInfluence: {
+                yamSevy: currentStarInfluence.sevyStar, // ดาวเสวย (from card)
+                yamTaek: currentStarInfluence.taekStar, // ดาวแทรก (from current time)
+                sevyStarName: currentStarInfluence.sevyStarName,
+                taekStarName: currentStarInfluence.taekStarName,
+                influence: currentStarInfluence.influence,
+                lookupKey: `${currentStarInfluence.sevyStar}-${currentStarInfluence.taekStar}`,
+                detailedInfluence: getDetailedStarInfluence(currentStarInfluence.sevyStar, currentStarInfluence.taekStar)
+            },
+            cardNumber: getCardNumber(cardFile),
+            luckyInfo: generateLuckyInfo(cardFile),
+            readingTimestamp: new Date().toISOString(),
+            readingContext: 'daily-card'
+        };
+        
+        // Add enhanced card to history
+        cardHistory.unshift(enhancedCard);
         
         // Keep only last 50 records (increased for multiple daily picks)
         if (cardHistory.length > 50) {
@@ -1456,49 +1663,8 @@ function handleCardClick(cardFile, cardElement) {
         if (starElements.starInfo) starElements.starInfo.style.display = 'flex';
         if (starElements.starExplanation) starElements.starExplanation.style.display = 'block';
         
-        // Display star influence result in a new section
-        let starInfluenceElement = document.getElementById('starInfluenceResult');
-        if (!starInfluenceElement) {
-            starInfluenceElement = document.createElement('div');
-            starInfluenceElement.id = 'starInfluenceResult';
-            starInfluenceElement.style.marginTop = '20px';
-            starInfluenceElement.style.padding = '20px';
-            starInfluenceElement.style.backgroundColor = 'rgba(255, 215, 0, 0.1)';
-            starInfluenceElement.style.borderRadius = '15px';
-            starInfluenceElement.style.border = '2px solid rgba(255, 215, 0, 0.3)';
-            starInfluenceElement.style.fontSize = '16px';
-            starInfluenceElement.style.lineHeight = '1.6';
-            
-            // Insert after star explanation section
-            const starExplanationElement = document.getElementById('starExplanation');
-            if (starExplanationElement && starExplanationElement.parentNode) {
-                starExplanationElement.parentNode.insertBefore(starInfluenceElement, starExplanationElement.nextSibling);
-            } else {
-                // Fallback: insert after lucky info section
-                const luckyInfoElement = document.getElementById('luckyInfo');
-                if (luckyInfoElement && luckyInfoElement.parentNode) {
-                    luckyInfoElement.parentNode.insertBefore(starInfluenceElement, luckyInfoElement.nextSibling);
-                }
-            }
-        }
-        
-        starInfluenceElement.innerHTML = `
-            <h4 style="color: #ff9f43; margin-bottom: 15px; display: flex; align-items: center;">
-                <i class="fas fa-star" style="margin-right: 10px;"></i>
-                ผลกระทบระหว่างดาวเสวยและดาวแทรก
-            </h4>
-            <div style="background: rgba(255, 255, 255, 0.8); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-                <p style="margin: 5px 0; color: #2d3436;"><strong>🌟 ดาวเสวย:</strong> ${sevyStarName} (${sevyStar})</p>
-                <p style="margin: 5px 0; color: #2d3436;"><strong>⭐ ดาวแทรก:</strong> ${taekStarName} (${taekStar})</p>
-                <p style="margin: 5px 0; color: #2d3436;"><strong>🕐 ยาม:</strong> ${yamInfo.periodName} - ${yamInfo.time}</p>
-            </div>
-            <div style="background: rgba(255, 107, 107, 0.1); padding: 15px; border-radius: 10px; border-left: 4px solid #ff6b6b;">
-                <h5 style="color: #e17055; margin-bottom: 10px;">📜 ผลจากตำราดาวเสวยดาวแทรก:</h5>
-                <p style="color: #2d3436; font-weight: 500; font-size: 16px;">${influence}</p>
-            </div>
-        `;
-        
-        starInfluenceElement.style.display = 'block';
+        // Star influence result section removed per user request
+        // Only showing the star interpretation sections (starSevyTaekInterpretation and starDetailedInterpretation)
         
         // Show daily affirmation
         const affirmation = generateAffirmation(selectedCard.name);
@@ -1702,11 +1868,15 @@ function manualResetDailyCard() {
         // Hide star info sections
         const starInfo = document.getElementById('starInfo');
         const starExplanation = document.getElementById('starExplanation');
-        const starInfluenceResult = document.getElementById('starInfluenceResult');
+        // starInfluenceResult removed per user request
+        const starSevyTaekInterpretation = document.getElementById('starSevyTaekInterpretation');
+        const starDetailedInterpretation = document.getElementById('starDetailedInterpretation');
         
         if (starInfo) starInfo.style.display = 'none';
         if (starExplanation) starExplanation.style.display = 'none';
-        if (starInfluenceResult) starInfluenceResult.style.display = 'none';
+        // starInfluenceResult hiding removed per user request
+        if (starSevyTaekInterpretation) starSevyTaekInterpretation.classList.add('hidden');
+        if (starDetailedInterpretation) starDetailedInterpretation.classList.add('hidden');
         
         // Hide card name meaning section if it exists
         const cardNameMeaningElement = document.getElementById('cardNameMeaning');
@@ -1969,6 +2139,7 @@ function initializePick3Cards() {
     // Reset any existing reading
     resetThreeCards();
     
+    // Set active state for 3-card reading
     threeCardsReading.isActive = true;
     threeCardsReading.cards = {
         past: null,
@@ -1983,19 +2154,142 @@ function initializePick3Cards() {
     // Hide start button and show reset button
     const startButton = document.getElementById('pick3CardsBtn');
     const resetButton = document.getElementById('reset3CardsBtn');
-    startButton.style.display = 'none';
-    resetButton.style.display = 'inline-block';
+    if (startButton) startButton.style.display = 'none';
+    if (resetButton) resetButton.style.display = 'inline-block';
     
     // Show instruction
     const instruction = document.getElementById('pickInstruction');
-    instruction.style.display = 'block';
+    if (instruction) instruction.style.display = 'block';
+    
+    // Ensure all card slots are clickable
+    const positions = ['pastCard', 'presentCard', 'futureCard'];
+    positions.forEach(position => {
+        const cardSlot = document.getElementById(position);
+        if (cardSlot) {
+            cardSlot.classList.add('clickable');
+            cardSlot.style.pointerEvents = 'auto';
+            cardSlot.style.cursor = 'pointer';
+            cardSlot.onclick = function() {
+                const positionName = position.replace('Card', '');
+                pickCardForSpecificPosition(positionName);
+            };
+                 }
+     });
+}
+
+// Refresh three cards history display
+function refreshThreeCardsHistory() {
+    console.log('Refreshing three cards history...');
+    const container = document.getElementById('threeCardsHistoryContainer');
+    if (container) {
+        container.innerHTML = '<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> กำลังโหลด...</div>';
+    }
+    
+    setTimeout(() => {
+        if (typeof loadThreeCardsHistory === 'function') {
+            console.log('Using advanced loadThreeCardsHistory function');
+            loadThreeCardsHistory();
+        } else {
+            console.log('Using fallback loadThreeCardsHistoryFallback function');
+            loadThreeCardsHistoryFallback();
+        }
+    }, 500);
+}
+
+// Create test data for three cards history (for demonstration)
+function createTestThreeCardsHistory() {
+    const testEntry = {
+        type: 'three-cards',
+        date: new Date().toISOString(),
+        readingTimestamp: new Date().toISOString(),
+        readingContext: 'three-cards-manual',
+        cards: {
+            past: {
+                file: 'ธนัง2.png',
+                name: 'ธนัง2',
+                meaning: 'ความมั่งคั่งและทรัพย์สินที่มั่นคง'
+            },
+            present: {
+                file: 'กัมมะ1.png', 
+                name: 'กัมมะ1',
+                meaning: 'การงานและความสำเร็จในอาชีพ'
+            },
+            future: {
+                file: 'ปุตตะ1.png',
+                name: 'ปุตตะ1', 
+                meaning: 'ลูกหลานและความสุขในครอบครัว'
+            }
+        },
+        summary: 'ดวงชะตาในระยะนี้แสดงถึงความมั่นคงทางการเงิน การงานที่ก้าวหน้า และความสุขในครอบครัว',
+        yamInfo: {
+            yamNumber: 3,
+            dayName: 'จันทร์',
+            periodName: 'ยามบ่าย',
+            time: '14:30-16:00',
+            periodType: 'afternoon'
+        },
+        tableData: {
+            rows: [
+                { position: 'อดีต', cardNumber: 6, values: [6, 7, 1, 2, 3, 4, 5] },
+                { position: 'ปัจจุบัน', cardNumber: 3, values: [3, 4, 5, 6, 7, 1, 2] },
+                { position: 'อนาคต', cardNumber: 5, values: [5, 6, 7, 1, 2, 3, 4] }
+            ],
+            columnSums: [14, 17, 13, 9, 12, 8, 11],
+            highlightedNumbers: [3]
+        },
+        yamInfluences: [
+            {
+                position: 'past',
+                positionThai: 'อดีต',
+                cardNumber: 6,
+                yamSevy: 6,
+                yamTaek: 3,
+                strengthLevel: 4,
+                category: 'positive'
+            },
+            {
+                position: 'present', 
+                positionThai: 'ปัจจุบัน',
+                cardNumber: 3,
+                yamSevy: 3,
+                yamTaek: 3,
+                strengthLevel: 5,
+                category: 'positive'
+            },
+            {
+                position: 'future',
+                positionThai: 'อนาคต', 
+                cardNumber: 5,
+                yamSevy: 5,
+                yamTaek: 3,
+                strengthLevel: 3,
+                category: 'positive'
+            }
+        ],
+        numericalAnalysis: {
+            cardNumbers: [6, 3, 5],
+            yamMatches: 5,
+            overallCompatibility: 'excellent'
+        }
+    };
+    
+    let existingHistory = JSON.parse(localStorage.getItem('threeCardsHistory') || '[]');
+    existingHistory.unshift(testEntry);
+    localStorage.setItem('threeCardsHistory', JSON.stringify(existingHistory));
+    
+    console.log('Test three-cards history data created');
 }
 
 function pickCardForSpecificPosition(position) {
-    if (!threeCardsReading.isActive) return;
+    console.log('Attempting to pick card for position:', position, 'Active:', threeCardsReading.isActive);
+    
+    if (!threeCardsReading.isActive) {
+        console.log('Three cards reading is not active');
+        return;
+    }
     
     // Check if this position already has a card
-    if (threeCardsReading.cards[position]) {
+    if (threeCardsReading.cards && threeCardsReading.cards[position]) {
         // Ask user if they want to replace the card
         const t = translations[currentLanguage];
         const confirmMessage = currentLanguage === 'th' ? 
@@ -2092,6 +2386,9 @@ function showThreeCardsSummary() {
     const overallReading = generateThreeCardsReading(cardsArray);
     overallReadingElement.textContent = overallReading;
     
+    // Generate numerical table
+    generateNumericalTable(cardsArray);
+    
     // Show summary with animation
     summaryElement.style.display = 'block';
     summaryElement.style.opacity = '0';
@@ -2144,16 +2441,116 @@ function generateThreeCardsReading(cards) {
 }
 
 function saveThreeCardsReading() {
-    if (!threeCardsReading.cards || threeCardsReading.cards.length !== 3) {
+    if (!threeCardsReading.cards || !threeCardsReading.cards.past || !threeCardsReading.cards.present || !threeCardsReading.cards.future) {
         alert('ไม่พบข้อมูลการดูไพ่ที่จะบันทึก');
         return;
     }
     
+    // Get current yam info
+    const yamInfo = calculateCurrentYam();
+    
+    // Generate numerical table data
+    const cardsArray = [
+        threeCardsReading.cards.past,
+        threeCardsReading.cards.present, 
+        threeCardsReading.cards.future
+    ];
+    
+    // Get card numbers and generate table
+    const cardNumbers = cardsArray.map(card => {
+        const cardData = CARD_DATA[card.file];
+        return cardData && cardData.number ? parseInt(cardData.number) : 1;
+    });
+    
+    const tableData = [];
+    cardNumbers.forEach((cardNumber, index) => {
+        const row = generateCardRow(cardNumber);
+        tableData.push({
+            position: index === 0 ? 'อดีต' : index === 1 ? 'ปัจจุบัน' : 'อนาคต',
+            cardNumber: cardNumber,
+            values: row
+        });
+    });
+    
+    // Calculate column sums
+    const columnSums = [];
+    for (let col = 0; col < 7; col++) {
+        let sum = 0;
+        tableData.forEach(row => {
+            sum += row.values[col];
+        });
+        columnSums.push(sum);
+    }
+    
+    // Calculate comprehensive yam influences for each card
+    const yamInfluences = cardsArray.map((card, index) => {
+        const cardNumber = getCardNumber(card.file);
+        const detailedInfluence = getDetailedStarInfluence(cardNumber, yamInfo.yamNumber);
+        const position = index === 0 ? 'past' : index === 1 ? 'present' : 'future';
+        
+        return {
+            position: position,
+            positionThai: index === 0 ? 'อดีต' : index === 1 ? 'ปัจจุบัน' : 'อนาคต',
+            cardFile: card.file,
+            cardName: card.name,
+            cardNumber: cardNumber,
+            yamSevy: cardNumber, // ดาวเสวย (from card)
+            yamTaek: yamInfo.yamNumber, // ดาวแทรก (from current time)
+            sevyStarName: getStarName(cardNumber),
+            taekStarName: getStarName(yamInfo.yamNumber),
+            basicInfluence: detailedInfluence.basicInfluence,
+            detailedInfluence: detailedInfluence,
+            strengthLevel: detailedInfluence.strengthLevel,
+            category: detailedInfluence.category,
+            recommendations: detailedInfluence.recommendations,
+            timeAnalysis: detailedInfluence.timeAnalysis
+        };
+    });
+    
     const reading = {
         type: 'three-cards',
         date: new Date().toISOString(),
+        readingTimestamp: new Date().toISOString(),
+        readingContext: 'three-cards-manual',
         cards: threeCardsReading.cards,
-        summary: document.getElementById('overallReading').textContent
+        summary: document.getElementById('overallReading').textContent,
+        yamInfo: {
+            yamNumber: yamInfo.yamNumber,
+            dayName: yamInfo.dayName,
+            periodName: yamInfo.periodName,
+            time: yamInfo.time,
+            periodType: yamInfo.periodType,
+            yamSequence: yamInfo.yamSequence,
+            currentTime: yamInfo.currentTime,
+            thaiDay: yamInfo.thaiDay
+        },
+        tableData: {
+            rows: tableData,
+            columnSums: columnSums,
+            highlightedNumbers: [yamInfo.yamNumber], // Numbers that match current yam
+            positionNames: [
+                ['อัตตะ', 'หินะ', 'ธนัง', 'ปิตา', 'มาตา', 'โภคา', 'มัชฌิมา'],
+                ['ตนุ', 'กุมภะ', 'สหัชชะ', 'พันธุ', 'ปุตตะ', 'อริ', 'ปัตนิ'], 
+                ['มรณะ', 'คุกะ', 'กัมมะ', 'ลาภะ', 'พยายะ', 'ทาสา', 'ทาสี']
+            ]
+        },
+        yamInfluences: yamInfluences,
+        numericalAnalysis: {
+            cardNumbers: cardNumbers,
+            yamMatches: columnSums.filter(sum => sum === yamInfo.yamNumber).length + 
+                        tableData.reduce((count, row) => count + row.values.filter(val => val === yamInfo.yamNumber).length, 0),
+            strengthAnalysis: yamInfluences.map(inf => ({
+                position: inf.positionThai,
+                strength: inf.strengthLevel,
+                category: inf.category
+            })),
+            overallCompatibility: calculateOverallCompatibility(yamInfluences)
+        },
+        detailedAnalysis: {
+            recommendations: generateThreeCardRecommendations(yamInfluences, yamInfo),
+            timeWindow: generateOptimalTimeWindow(yamInfo, yamInfluences),
+            futureGuidance: generateFutureGuidance(cardsArray, yamInfluences)
+        }
     };
     
     // Get existing journal entries
@@ -2170,21 +2567,49 @@ function saveThreeCardsReading() {
     // Save to localStorage
     localStorage.setItem('journalEntries', JSON.stringify(journalEntries));
     
+    // Also save to separate three-cards history
+    let threeCardsHistory = JSON.parse(localStorage.getItem('threeCardsHistory') || '[]');
+    threeCardsHistory.unshift(reading);
+    
+    // Keep only last 50 three-card readings
+    if (threeCardsHistory.length > 50) {
+        threeCardsHistory = threeCardsHistory.slice(0, 50);
+    }
+    
+    localStorage.setItem('threeCardsHistory', JSON.stringify(threeCardsHistory));
+    
     // Show success message
-    alert('บันทึกการดูไพ่เรียบร้อยแล้ว! คุณสามารถดูในหน้าบันทึกได้');
+    const t = translations[currentLanguage];
+    const successMessage = currentLanguage === 'th' ? 
+        'บันทึกการดูไพ่ 3 ใบเรียบร้อยแล้ว! รวมถึงตารางและข้อมูลยาม 🌟' : 
+        'Three-card reading saved successfully! Including table and yam data 🌟';
+    alert(successMessage);
     
     // Update journal tab if it exists
     if (typeof loadJournalEntries === 'function') {
         loadJournalEntries();
     }
+    
+    // Update separate three-cards history display if visible
+    setTimeout(() => {
+        if (typeof loadThreeCardsHistory === 'function') {
+            loadThreeCardsHistory();
+        } else {
+            // Also try fallback function
+            loadThreeCardsHistoryFallback();
+        }
+    }, 200);
 }
 
 function resetThreeCards() {
-    // Reset the reading state
+    // Reset the reading state with correct structure
     threeCardsReading = {
-        cards: [],
-        isActive: false,
-        currentStep: 0
+        cards: {
+            past: null,
+            present: null,
+            future: null
+        },
+        isActive: false
     };
     
     // Hide display area
@@ -2195,9 +2620,19 @@ function resetThreeCards() {
     const summaryElement = document.getElementById('threeCardsSummary');
     summaryElement.style.display = 'none';
     
+    // Hide instruction
+    const instruction = document.getElementById('pickInstruction');
+    if (instruction) {
+        instruction.style.display = 'none';
+    }
+    
     // Reset card slots
     const positions = ['pastCard', 'presentCard', 'futureCard'];
     const meanings = ['pastMeaning', 'presentMeaning', 'futureMeaning'];
+    const t = translations[currentLanguage];
+    const defaultTexts = currentLanguage === 'th' ? 
+        ['คลิกเพื่อเลือกไพ่อดีต', 'คลิกเพื่อเลือกไพ่ปัจจุบัน', 'คลิกเพื่อเลือกไพ่อนาคต'] :
+        ['Click to pick Past card', 'Click to pick Present card', 'Click to pick Future card'];
     
     positions.forEach((position, index) => {
         const cardSlot = document.getElementById(position);
@@ -2205,21 +2640,413 @@ function resetThreeCards() {
         
         // Reset image
         img.src = 'Card Back.png';
-        img.alt = position.replace('Card', ' Card');
+        img.alt = `Click to pick ${position.replace('Card', '')} Card`;
         
-        // Reset classes
+        // Reset classes and re-enable clicking
         cardSlot.classList.remove('revealed', 'revealing');
+        cardSlot.classList.add('clickable');
+        cardSlot.style.pointerEvents = 'auto';
+        cardSlot.style.cursor = 'pointer';
         
         // Reset meaning
         const meaningElement = document.getElementById(meanings[index]);
-        meaningElement.textContent = '';
-        meaningElement.classList.add('empty');
+        if (meaningElement) {
+            meaningElement.textContent = defaultTexts[index];
+            meaningElement.classList.add('empty');
+            meaningElement.classList.remove('filled');
+        }
     });
     
-    // Reset button
-    const button = document.getElementById('pick3CardsBtn');
-    button.style.display = 'inline-block';
-    button.innerHTML = '<i class="fas fa-magic"></i> เลือกไพ่ 3 ใบ';
+    // Reset buttons
+    const startButton = document.getElementById('pick3CardsBtn');
+    const resetButton = document.getElementById('reset3CardsBtn');
+    
+    if (startButton) {
+        startButton.style.display = 'inline-block';
+        const t = translations[currentLanguage];
+        startButton.innerHTML = `<i class="fas fa-magic"></i> ${t.pickThreeCards || 'เลือกไพ่ 3 ใบ'}`;
+    }
+    
+    if (resetButton) {
+        resetButton.style.display = 'none';
+    }
+}
+
+// Generate numerical table for 3-card reading
+function generateNumericalTable(cardsArray) {
+    if (!cardsArray || cardsArray.length !== 3) return;
+    
+    // Get card numbers
+    const cardNumbers = cardsArray.map(card => {
+        const cardData = CARD_DATA[card.file];
+        return cardData && cardData.number ? parseInt(cardData.number) : 1;
+    });
+    
+    console.log('Card numbers:', cardNumbers);
+    
+    // Generate table rows based on card numbers
+    const tableRows = [];
+    
+    cardNumbers.forEach((cardNumber, index) => {
+        const row = generateCardRow(cardNumber);
+        tableRows.push({
+            cardNumber: cardNumber,
+            values: row,
+            cardName: cardsArray[index].name,
+            position: index === 0 ? 'อดีต' : index === 1 ? 'ปัจจุบัน' : 'อนาคต'
+        });
+    });
+    
+    // Calculate column sums
+    const columnSums = [];
+    for (let col = 0; col < 7; col++) {
+        let sum = 0;
+        tableRows.forEach(row => {
+            sum += row.values[col];
+        });
+        columnSums.push(sum);
+    }
+    
+    // Get current yam number for highlighting
+    const yamInfo = calculateCurrentYam();
+    const currentYam = yamInfo.yamNumber;
+    
+    // Generate HTML table
+    const tableContainer = document.getElementById('numericalTableContainer');
+    if (!tableContainer) return;
+    
+    const t = translations[currentLanguage];
+    const cardLabel = currentLanguage === 'th' ? 'ไพ่' : 'Card';
+    const sumLabel = currentLanguage === 'th' ? 'รวม' : 'Sum';
+    
+    // Thai fortune-telling position names for each column
+    const positionNames = [
+        ['อัตตะ', 'หินะ', 'ธนัง', 'ปิตา', 'มาตา', 'โภคา', 'มัชฌิมา'],
+        ['ตนุ', 'กุมภะ', 'สหัชชะ', 'พันธุ', 'ปุตตะ', 'อริ', 'ปัตนิ'], 
+        ['มรณะ', 'คุกะ', 'กัมมะ', 'ลาภะ', 'พยายะ', 'ทาสา', 'ทาสี']
+    ];
+    
+    let tableHTML = `
+        <table class="numerical-table">
+            <tbody>
+    `;
+    
+    // Add card rows
+    tableRows.forEach((row, rowIndex) => {
+        tableHTML += `<tr class="card-row">`;
+        tableHTML += `<td>${row.position}<br/><small>(${row.cardNumber})</small></td>`;
+        
+        row.values.forEach((value, colIndex) => {
+            const isYamHighlight = value === currentYam;
+            const highlightClass = isYamHighlight ? 'yam-highlight' : '';
+            const positionName = positionNames[rowIndex] ? positionNames[rowIndex][colIndex] : '';
+            tableHTML += `<td class="${highlightClass}">
+                <div class="cell-number">${value}</div>
+                <div class="cell-position">${positionName}</div>
+            </td>`;
+        });
+        
+        tableHTML += `</tr>`;
+    });
+    
+    // Add separator line
+    tableHTML += `<tr><td colspan="8" style="border: none; padding: 5px; background: #f0f0f0;"></td></tr>`;
+    
+    // Add sum row
+    tableHTML += `<tr class="sum-row">`;
+    tableHTML += `<td>${sumLabel}</td>`;
+    
+    columnSums.forEach(sum => {
+        const isYamHighlight = sum === currentYam;
+        const highlightClass = isYamHighlight ? 'yam-highlight' : '';
+        tableHTML += `<td class="${highlightClass}">
+            <div class="cell-number">${sum}</div>
+        </td>`;
+    });
+    
+    tableHTML += `</tr>`;
+    tableHTML += `
+            </tbody>
+        </table>
+    `;
+    
+    // Add yam information
+    tableHTML += `
+        <div class="yam-info-display">
+            <strong>${t.currentYam}: ${currentYam}</strong> (${yamInfo.dayName}, ${yamInfo.time})<br/>
+            <small>${t.yamHighlightNote}</small>
+        </div>
+    `;
+    
+    tableContainer.innerHTML = tableHTML;
+}
+
+// Generate a row of 7 numbers based on card number
+function generateCardRow(cardNumber) {
+    // Ensure card number is between 1-7
+    cardNumber = Math.max(1, Math.min(7, cardNumber));
+    
+    const row = [];
+    
+    // Pattern based on the user's example:
+    // Card 7: 7, 6, 5, 4, 3, 2, 1 (descending)
+    // Card 4: 4, 5, 6, 7, 1, 2, 3 (ascending with wrap)
+    // Card 1: 1, 2, 3, 4, 5, 6, 7 (ascending)
+    
+    // Determine if we should use ascending or descending pattern
+    // Based on the example, it seems like higher numbers go descending
+    // Let's use: 7 goes descending, others go ascending
+    
+    if (cardNumber === 7) {
+        // Descending pattern for card 7
+        for (let i = 0; i < 7; i++) {
+            let value = cardNumber - i;
+            
+            // Handle wrapping (if goes below 1, wrap to 7)
+            while (value < 1) {
+                value = value + 7;
+            }
+            
+            row.push(value);
+        }
+    } else {
+        // Ascending pattern for other cards
+        for (let i = 0; i < 7; i++) {
+            let value = cardNumber + i;
+            
+            // Handle wrapping (if goes over 7, wrap to 1)
+            while (value > 7) {
+                value = value - 7;
+            }
+            
+            row.push(value);
+        }
+    }
+    
+    return row;
+}
+
+// Get detailed star influence information
+function getDetailedStarInfluence(sevyStar, taekStar) {
+    const lookupKey = `${sevyStar}-${taekStar}`;
+    const basicInfluence = STAR_INFLUENCE_TABLE[lookupKey] || 'ไม่พบข้อมูลในตำรา';
+    
+    return {
+        sevyStar: sevyStar,
+        taekStar: taekStar,
+        sevyStarName: getStarName(sevyStar),
+        taekStarName: getStarName(taekStar),
+        lookupKey: lookupKey,
+        basicInfluence: basicInfluence,
+        strengthLevel: calculateInfluenceStrength(sevyStar, taekStar),
+        category: categorizeInfluence(basicInfluence),
+        recommendations: generateInfluenceRecommendations(sevyStar, taekStar, basicInfluence),
+        timeAnalysis: analyzeTimingInfluence(sevyStar, taekStar)
+    };
+}
+
+// Calculate influence strength (1-5)
+function calculateInfluenceStrength(sevyStar, taekStar) {
+    // Same stars = very strong
+    if (sevyStar === taekStar) return 5;
+    
+    // Adjacent numbers = moderate
+    const diff = Math.abs(sevyStar - taekStar);
+    if (diff === 1 || diff === 6) return 3; // 6 because 1-7 and 7-1 are adjacent in circular
+    
+    // Opposite numbers = strong contrast
+    if (diff === 3 || diff === 4) return 4;
+    
+    // Others = moderate
+    return 2;
+}
+
+// Categorize influence type
+function categorizeInfluence(influence) {
+    if (!influence || influence === 'ไม่พบข้อมูลในตำรา') return 'unknown';
+    
+    const positive = ['ดี', 'เจริญ', 'สำเร็จ', 'โชค', 'ลาভ', 'กำไร', 'รุ่งเรือง'];
+    const negative = ['เสีย', 'ขาด', 'ลด', 'หาย', 'เสื่อม', 'ลำบาก', 'อุปสรรค'];
+    const neutral = ['ปกติ', 'คงที่', 'เท่าเดิม', 'สมดุล'];
+    
+    const lowerInfluence = influence.toLowerCase();
+    
+    if (positive.some(word => lowerInfluence.includes(word))) return 'positive';
+    if (negative.some(word => lowerInfluence.includes(word))) return 'negative';
+    if (neutral.some(word => lowerInfluence.includes(word))) return 'neutral';
+    
+    return 'mixed';
+}
+
+// Generate recommendations based on star influence
+function generateInfluenceRecommendations(sevyStar, taekStar, influence) {
+    const recommendations = [];
+    
+    // Based on sevy star (card influence)
+    const sevyAdvice = {
+        1: "ควรใช้ความอดทนและมุ่งมั่นในการทำงาน",
+        2: "เหมาะกับการร่วมมือและการสร้างความสัมพันธ์",
+        3: "ดีสำหรับการลงทุนและการขยายธุรกิจ",
+        4: "ควรใส่ใจเรื่องเพื่อนฝูงและการสื่อสาร",
+        5: "เหมาะกับการวางแผนระยะยาวและการสร้างฐานรากมั่นคง",
+        6: "ดีสำหรับการเงินและการสะสมทรัพย์สิน",
+        7: "ควรระมัดระวังและใช้ความอดทนในการแก้ปัญหา"
+    };
+    
+    recommendations.push(sevyAdvice[sevyStar] || "ควรใช้วิจารณญาณในการตัดสินใจ");
+    
+    // Based on taek star (time influence)
+    const taekAdvice = {
+        1: "เวลานี้เหมาะกับการเริ่มต้นสิ่งใหม่",
+        2: "ควรใช้เวลานี้ในการสร้างความสัมพันธ์",
+        3: "เหมาะกับการลงทุนและการตัดสินใจทางการเงิน",
+        4: "ดีสำหรับการติดต่อสื่อสารและการเจรจา",
+        5: "ควรใช้เวลานี้ในการวางแผนและเตรียมการ",
+        6: "เหมาะกับการจัดการเงินทองและทรัพย์สิน",
+        7: "ควรระมัดระวังและหลีกเลี่ยงการตัดสินใจสำคัญ"
+    };
+    
+    recommendations.push(taekAdvice[taekStar] || "ควรใช้ความระมัดระวังในช่วงเวลานี้");
+    
+    return recommendations;
+}
+
+// Analyze timing influence
+function analyzeTimingInfluence(sevyStar, taekStar) {
+    const analysis = {
+        compatibility: 'moderate',
+        timing: 'neutral',
+        advice: 'ใช้วิจารณญาณในการตัดสินใจ'
+    };
+    
+    // Same numbers = very compatible
+    if (sevyStar === taekStar) {
+        analysis.compatibility = 'excellent';
+        analysis.timing = 'perfect';
+        analysis.advice = 'เวลานี้เหมาะสมมากสำหรับการดำเนินการตามความหมายของไพ่';
+    }
+    // Adjacent numbers = good compatibility
+    else if (Math.abs(sevyStar - taekStar) <= 1 || Math.abs(sevyStar - taekStar) >= 6) {
+        analysis.compatibility = 'good';
+        analysis.timing = 'favorable';
+        analysis.advice = 'เวลานี้ค่อนข้างเหมาะสมสำหรับการดำเนินการ';
+    }
+    // Opposite numbers = challenging but potentially powerful
+    else if (Math.abs(sevyStar - taekStar) >= 3 && Math.abs(sevyStar - taekStar) <= 4) {
+        analysis.compatibility = 'challenging';
+        analysis.timing = 'transformative';
+        analysis.advice = 'เวลานี้อาจมีความท้าทายแต่ก็เป็นโอกาสสำหรับการเปลี่ยนแปลงที่ดี';
+    }
+    
+    return analysis;
+}
+
+// Calculate overall compatibility for three cards
+function calculateOverallCompatibility(yamInfluences) {
+    if (!yamInfluences || yamInfluences.length !== 3) return 'unknown';
+    
+    const totalStrength = yamInfluences.reduce((sum, inf) => sum + inf.strengthLevel, 0);
+    const avgStrength = totalStrength / 3;
+    
+    const categories = yamInfluences.map(inf => inf.category);
+    const positiveCount = categories.filter(cat => cat === 'positive').length;
+    const negativeCount = categories.filter(cat => cat === 'negative').length;
+    
+    if (avgStrength >= 4 && positiveCount >= 2) return 'excellent';
+    if (avgStrength >= 3.5 && positiveCount >= 1) return 'good';
+    if (negativeCount >= 2) return 'challenging';
+    return 'moderate';
+}
+
+// Generate recommendations for three-card reading
+function generateThreeCardRecommendations(yamInfluences, yamInfo) {
+    const recommendations = [];
+    
+    // Overall timing recommendation
+    recommendations.push(`ช่วงเวลานี้ (${yamInfo.dayName} ${yamInfo.time}) เป็นยาม${yamInfo.yamNumber} เหมาะสมสำหรับการปฏิบัติตามคำแนะนำจากไพ่`);
+    
+    // Individual position recommendations
+    yamInfluences.forEach(influence => {
+        if (influence.recommendations && influence.recommendations.length > 0) {
+            recommendations.push(`${influence.positionThai}: ${influence.recommendations[0]}`);
+        }
+    });
+    
+    // Overall compatibility advice
+    const compatibility = calculateOverallCompatibility(yamInfluences);
+    switch (compatibility) {
+        case 'excellent':
+            recommendations.push('ดวงชะตาในระยะนี้อยู่ในช่วงดี ควรใช้โอกาสนี้ในการก้าวหน้า');
+            break;
+        case 'good':
+            recommendations.push('สถานการณ์โดยรวมเป็นไปในทางที่ดี ควรมั่นใจในการตัดสินใจ');
+            break;
+        case 'challenging':
+            recommendations.push('ช่วงนี้อาจมีอุปสรรค ควรใช้ความระมัดระวังและอดทน');
+            break;
+        default:
+            recommendations.push('ควรใช้วิจารณญาณและความสมดุลในการดำเนินชีวิต');
+    }
+    
+    return recommendations;
+}
+
+// Generate optimal time window
+function generateOptimalTimeWindow(yamInfo, yamInfluences) {
+    const strongInfluences = yamInfluences.filter(inf => inf.strengthLevel >= 4);
+    
+    if (strongInfluences.length >= 2) {
+        return {
+            period: 'current',
+            description: `ช่วงเวลาปัจจุบัน (${yamInfo.time}) เป็นช่วงที่เหมาะสมมาก`,
+            duration: '3-7 วัน',
+            advice: 'ควรดำเนินการตามแผนที่วางไว้ในช่วงนี้'
+        };
+    }
+    
+    return {
+        period: 'flexible',
+        description: 'สามารถเลือกเวลาที่เหมาะสมได้ตามสถานการณ์',
+        duration: '1-2 สัปดาห์',
+        advice: 'ควรเฝ้าดูสัญญาณและโอกาสที่เหมาะสม'
+    };
+}
+
+// Generate future guidance
+function generateFutureGuidance(cardsArray, yamInfluences) {
+    const futureCard = cardsArray[2]; // Future position
+    const futureInfluence = yamInfluences[2];
+    
+    const guidance = {
+        shortTerm: '',
+        mediumTerm: '',
+        longTerm: '',
+        cautions: []
+    };
+    
+    // Short term (1-3 months)
+    guidance.shortTerm = `ในระยะใกล้ พลังของ${futureCard.name}จะส่งผลให้${futureInfluence.basicInfluence}`;
+    
+    // Medium term (3-6 months)
+    if (futureInfluence.category === 'positive') {
+        guidance.mediumTerm = 'ระยะกลางจะเป็นช่วงเวลาแห่งการเติบโตและพัฒนา';
+    } else if (futureInfluence.category === 'negative') {
+        guidance.mediumTerm = 'ระยะกลางควรเตรียมตัวและสร้างความมั่นคง';
+    } else {
+        guidance.mediumTerm = 'ระยะกลางจะเป็นช่วงแห่งการเปลี่ยนแปลงและปรับตัว';
+    }
+    
+    // Long term (6+ months)
+    guidance.longTerm = 'ระยะยาวความสำเร็จจะขึ้นอยู่กับการปฏิบัติตามคำแนะนำในปัจจุบัน';
+    
+    // Cautions
+    yamInfluences.forEach(influence => {
+        if (influence.category === 'negative' || influence.category === 'challenging') {
+            guidance.cautions.push(`ระวัง${influence.positionThai}: ${influence.timeAnalysis.advice}`);
+        }
+    });
+    
+    return guidance;
 }
 
 // Get card number from CARD_DATA
@@ -3861,4 +4688,452 @@ document.addEventListener('keydown', function(e) {
 // Initialize card modal listeners when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     addCardModalListeners();
+    
+    // Debug: Check if we have three cards history data
+    const threeCardsHistory = JSON.parse(localStorage.getItem('threeCardsHistory') || '[]');
+    console.log('Three Cards History entries:', threeCardsHistory.length);
+    if (threeCardsHistory.length > 0) {
+        console.log('Latest entry:', threeCardsHistory[0]);
+    }
+    
+    // If no test data exists, create some for demonstration
+    if (threeCardsHistory.length === 0 && localStorage.getItem('createTestData') !== 'false') {
+        console.log('Creating test three-cards history data...');
+        createTestThreeCardsHistory();
+    }
 });
+
+// Journal Section Management
+function toggleJournalSection() {
+    const journalSection = document.getElementById('journalSection');
+    if (journalSection.style.display === 'none' || journalSection.style.display === '') {
+        journalSection.style.display = 'block';
+        setTimeout(() => {
+            journalSection.classList.add('show');
+        }, 10);
+        
+        // Load initial data
+        switchJournalTab('all');
+    } else {
+        journalSection.classList.remove('show');
+        setTimeout(() => {
+            journalSection.style.display = 'none';
+        }, 300);
+    }
+}
+
+// Switch between journal tabs
+function switchJournalTab(tabName) {
+    // Hide all tab contents
+    const tabContents = document.querySelectorAll('.journal-tab-content');
+    tabContents.forEach(content => {
+        content.classList.remove('active');
+    });
+    
+    // Remove active class from all tab buttons
+    const tabButtons = document.querySelectorAll('.journal-tab-btn');
+    tabButtons.forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Show selected tab content
+    let activeContent;
+    let activeButton;
+    
+    switch (tabName) {
+        case 'all':
+            activeContent = document.getElementById('allJournalContent');
+            activeButton = document.querySelector('.journal-tab-btn[onclick*="all"]');
+            if (typeof loadJournal === 'function') {
+                loadJournal();
+            }
+            break;
+        case 'daily':
+            activeContent = document.getElementById('dailyJournalContent');
+            activeButton = document.querySelector('.journal-tab-btn[onclick*="daily"]');
+            loadDailyJournalHistory();
+            break;
+        case 'three-cards':
+            activeContent = document.getElementById('threeCardsJournalContent');
+            activeButton = document.querySelector('.journal-tab-btn[onclick*="three-cards"]');
+            // Try to load three cards history
+            setTimeout(() => {
+                if (typeof loadThreeCardsHistory === 'function') {
+                    loadThreeCardsHistory();
+                } else {
+                    // Fallback: load manually if function not available yet
+                    loadThreeCardsHistoryFallback();
+                }
+            }, 100);
+            break;
+    }
+    
+    if (activeContent) {
+        activeContent.classList.add('active');
+    }
+    if (activeButton) {
+        activeButton.classList.add('active');
+    }
+}
+
+// Load daily journal history (filtered for single cards only)
+function loadDailyJournalHistory() {
+    const allEntries = JSON.parse(localStorage.getItem('journalEntries') || '[]');
+    const dailyEntries = allEntries.filter(entry => entry.type !== 'three-cards');
+    
+    const container = document.getElementById('dailyJournalEntries');
+    container.innerHTML = '';
+    
+    if (dailyEntries.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: #666;">ยังไม่มีประวัติการดูไพ่ประจำวัน</p>';
+        return;
+    }
+    
+    dailyEntries.forEach(entry => {
+        const entryElement = document.createElement('div');
+        entryElement.className = 'journal-entry fade-in';
+        
+        const date = new Date(entry.date).toLocaleDateString('th-TH', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        const moodEmoji = {
+            'very-happy': '😄',
+            'happy': '😊',
+            'neutral': '😐',
+            'sad': '😔',
+            'very-sad': '😢'
+        };
+        
+        // Use the createSingleCardJournalEntry function from advanced-features.js
+        if (typeof createSingleCardJournalEntry === 'function') {
+            entryElement.innerHTML = createSingleCardJournalEntry(entry, date, moodEmoji);
+        } else {
+            // Fallback if function not available
+            entryElement.innerHTML = `
+                <div class="journal-entry-header">
+                    <span class="journal-entry-date">${date}</span>
+                    <span class="journal-entry-mood">${moodEmoji[entry.mood] || '😊'}</span>
+                </div>
+                <div class="journal-entry-card">
+                    <img src="${entry.card.file}" alt="${entry.card.name}" class="card-mini-img">
+                    <span>${entry.card.name}</span>
+                </div>
+                <div class="journal-entry-notes">${entry.notes || entry.card.meaning}</div>
+            `;
+        }
+        
+        container.appendChild(entryElement);
+    });
+}
+
+// Fallback function to load three cards history if advanced-features.js not ready
+function loadThreeCardsHistoryFallback() {
+    const threeCardsHistory = JSON.parse(localStorage.getItem('threeCardsHistory') || '[]');
+    const container = document.getElementById('threeCardsHistoryContainer');
+    
+    if (!container) {
+        console.warn('Three Cards History container not found');
+        return;
+    }
+    
+    container.innerHTML = '';
+    
+    if (threeCardsHistory.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; color: #666; padding: 40px;">
+                <div style="font-size: 48px; margin-bottom: 20px;">🔮</div>
+                <h4>ยังไม่มีประวัติการดูไพ่ 3 ใบ</h4>
+                <p>เมื่อคุณทำการเลือกไพ่ 3 ใบ (อดีต ปัจจุบัน อนาคต) และกดบันทึก<br>ประวัติจะแสดงที่นี่พร้อมข้อมูลยามครบถ้วน</p>
+                <div style="margin-top: 20px;">
+                    <button onclick="toggleJournalSection(); initializePick3Cards();" class="btn primary">
+                        <i class="fas fa-cards"></i> ไปดูไพ่ 3 ใบ
+                    </button>
+                </div>
+            </div>
+        `;
+        return;
+    }
+    
+    threeCardsHistory.forEach(entry => {
+        const entryElement = document.createElement('div');
+        entryElement.className = 'journal-entry fade-in';
+        
+        const date = new Date(entry.date).toLocaleDateString('th-TH', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        // Create a simplified three-cards entry
+        const cards = entry.cards || {};
+        const yamInfo = entry.yamInfo || {};
+        const tableData = entry.tableData || {};
+        const numericalAnalysis = entry.numericalAnalysis || {};
+        
+        let cardsHTML = '';
+        if (cards.past && cards.present && cards.future) {
+            cardsHTML = `
+                <div class="three-cards-display-simple">
+                    <div class="card-simple">
+                        <img src="${cards.past.file}" alt="${cards.past.name}">
+                        <span>อดีต: ${cards.past.name}</span>
+                    </div>
+                    <div class="card-simple">
+                        <img src="${cards.present.file}" alt="${cards.present.name}">
+                        <span>ปัจจุบัน: ${cards.present.name}</span>
+                    </div>
+                    <div class="card-simple">
+                        <img src="${cards.future.file}" alt="${cards.future.name}">
+                        <span>อนาคต: ${cards.future.name}</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+                 let yamInfoHTML = '';
+         if (yamInfo.yamNumber) {
+             const yamInfluences = entry.yamInfluences || [];
+             const yamMatchCount = numericalAnalysis.yamMatches || 0;
+             
+             yamInfoHTML = `
+                 <div class="yam-info-simple">
+                     <span class="yam-number">ยาม: ${yamInfo.yamNumber}</span>
+                     <span class="time-info">${yamInfo.dayName || ''} ${yamInfo.time || ''}</span>
+                     ${yamMatchCount > 0 ? `<span class="yam-matches-badge">🌟 ตรงยาม: ${yamMatchCount}</span>` : ''}
+                 </div>
+                 ${yamInfluences.length > 0 ? `
+                     <div class="yam-influences-simple">
+                         ${yamInfluences.map(inf => `
+                             <span class="influence-badge">
+                                 ${inf.positionThai}: ⭐${inf.yamSevy} 🌟${inf.yamTaek}
+                             </span>
+                         `).join('')}
+                     </div>
+                 ` : ''}
+             `;
+         }
+        
+        let tableHTML = '';
+        if (tableData.columnSums && tableData.columnSums.length > 0) {
+            tableHTML = `
+                <div class="table-info-simple">
+                    <span>📊 ผลรวมตารางตัวเลข:</span>
+                    <div class="sums-display">
+                        ${tableData.columnSums.map((sum, index) => 
+                            `<span class="sum-value ${tableData.highlightedNumbers && tableData.highlightedNumbers.includes(sum) ? 'highlighted' : ''}">${sum}</span>`
+                        ).join(' | ')}
+                    </div>
+                    ${numericalAnalysis.yamMatches ? `<small>🌟 ตรงกับยาม: ${numericalAnalysis.yamMatches} ตำแหน่ง</small>` : ''}
+                </div>
+            `;
+        }
+        
+        entryElement.innerHTML = `
+            <div class="journal-entry-header">
+                <span class="journal-entry-date">${date}</span>
+                <span class="journal-entry-type">🔮 ไพ่ 3 ใบ</span>
+            </div>
+            ${cardsHTML}
+            ${yamInfoHTML}
+            ${tableHTML}
+            <div class="journal-entry-summary">
+                <p>${entry.summary || 'ไม่มีสรุป'}</p>
+            </div>
+            <div class="entry-actions-simple">
+                <button class="btn mini" onclick="showThreeCardsDetails('${entry.date}')">
+                    <i class="fas fa-eye"></i> ดูรายละเอียด
+                </button>
+            </div>
+        `;
+        
+        container.appendChild(entryElement);
+    });
+}
+
+// Show three cards details (simple version)
+function showThreeCardsDetails(entryDate) {
+    const threeCardsHistory = JSON.parse(localStorage.getItem('threeCardsHistory') || '[]');
+    const entry = threeCardsHistory.find(e => e.date === entryDate);
+    if (!entry) return;
+    
+    let detailsHTML = `
+        <div style="max-height: 400px; overflow-y: auto; padding: 20px;">
+            <h4>🔮 รายละเอียดการดูไพ่ 3 ใบ</h4>
+            <p><strong>วันที่:</strong> ${new Date(entry.date).toLocaleDateString('th-TH')}</p>
+    `;
+    
+    if (entry.cards) {
+        detailsHTML += `
+            <div class="cards-detail">
+                <h5>ไพ่ที่เลือก:</h5>
+                <ul>
+                    <li><strong>อดีต:</strong> ${entry.cards.past?.name || 'N/A'} - ${entry.cards.past?.meaning || ''}</li>
+                    <li><strong>ปัจจุบัน:</strong> ${entry.cards.present?.name || 'N/A'} - ${entry.cards.present?.meaning || ''}</li>
+                    <li><strong>อนาคต:</strong> ${entry.cards.future?.name || 'N/A'} - ${entry.cards.future?.meaning || ''}</li>
+                </ul>
+            </div>
+        `;
+    }
+    
+    if (entry.yamInfo) {
+        detailsHTML += `
+            <div class="yam-detail">
+                <h5>ข้อมูลยาม:</h5>
+                <p><strong>ยาม:</strong> ${entry.yamInfo.yamNumber}</p>
+                <p><strong>วัน:</strong> ${entry.yamInfo.dayName}</p>
+                <p><strong>เวลา:</strong> ${entry.yamInfo.time}</p>
+            </div>
+        `;
+    }
+    
+    if (entry.tableData && entry.tableData.columnSums) {
+        detailsHTML += `
+            <div class="table-detail">
+                <h5>ตารางตัวเลข:</h5>
+                <p><strong>ผลรวมแต่ละคอลัมน์:</strong> ${entry.tableData.columnSums.join(', ')}</p>
+                ${entry.numericalAnalysis?.yamMatches ? `<p><strong>จำนวนที่ตรงกับยาม:</strong> ${entry.numericalAnalysis.yamMatches} ตำแหน่ง</p>` : ''}
+            </div>
+        `;
+    }
+    
+    detailsHTML += `
+            <div class="summary-detail">
+                <h5>สรุป:</h5>
+                <p>${entry.summary || 'ไม่มีสรุป'}</p>
+            </div>
+        </div>
+    `;
+    
+    // Show in alert for now (can be improved with modal later)
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: rgba(0,0,0,0.5); z-index: 10000; display: flex; 
+        align-items: center; justify-content: center;
+    `;
+    
+    const content = document.createElement('div');
+    content.style.cssText = `
+        background: white; border-radius: 15px; max-width: 600px; 
+        width: 90%; max-height: 80%; overflow-y: auto; position: relative;
+    `;
+    
+    content.innerHTML = `
+        ${detailsHTML}
+        <div style="padding: 20px; text-align: center; border-top: 1px solid #eee;">
+            <button onclick="this.closest('.modal-overlay').remove()" class="btn primary">ปิด</button>
+        </div>
+    `;
+    
+    modal.className = 'modal-overlay';
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    // Close when clicking outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+
+// Star helper functions for Star Sevy-Taek system
+function getStarName(number) {
+    const starNames = {
+        1: 'อาทิตย์',
+        2: 'จันทร์', 
+        3: 'อังคาร',
+        4: 'พุธ',
+        5: 'พฤหัส',
+        6: 'ศุกร์',
+        7: 'เสาร์'
+    };
+    return starNames[number] || 'ไม่ระบุ';
+}
+
+function getStarKeyFromNumber(number) {
+    const starKeys = {
+        1: 'sun',
+        2: 'moon',
+        3: 'mars', 
+        4: 'mercury',
+        5: 'jupiter',
+        6: 'venus',
+        7: 'saturn'
+    };
+    return starKeys[number] || 'sun';
+}
+
+// Debug function to check database
+function debugStarDatabase() {
+    if (typeof STAR_SEVY_TAEK_DATABASE === 'undefined') {
+        console.error('STAR_SEVY_TAEK_DATABASE is not loaded!');
+        return false;
+    }
+    
+    console.log('Database loaded successfully');
+    console.log('Available interpretations:', Object.keys(STAR_SEVY_TAEK_DATABASE.interpretations).length);
+    console.log('Sample interpretations:');
+    
+    // Show a few sample interpretations
+    const sampleKeys = ['moon-mercury', 'sun-venus', 'mars-jupiter'];
+    sampleKeys.forEach(key => {
+        const interpretation = STAR_SEVY_TAEK_DATABASE.interpretations[key];
+        if (interpretation) {
+            console.log(`${key}: ${interpretation.substring(0, 50)}...`);
+        } else {
+            console.log(`${key}: NOT FOUND`);
+        }
+    });
+    
+    return true;
+}
+
+// Test function for Star Sevy-Taek
+function testStarSevyTaek() {
+    console.log('=== Testing Star Sevy-Taek System ===');
+    
+    if (typeof STAR_SEVY_TAEK_DATABASE === 'undefined') {
+        console.error('❌ STAR_SEVY_TAEK_DATABASE is not loaded!');
+        return;
+    }
+    
+    // Test specific interpretation
+    const testKey = 'moon-mercury';
+    const interpretation = STAR_SEVY_TAEK_DATABASE.interpretations[testKey];
+    
+    console.log('✅ Database loaded successfully');
+    console.log(`🔍 Testing key: ${testKey}`);
+    console.log(`📖 Interpretation found: ${interpretation ? 'YES' : 'NO'}`);
+    
+    if (interpretation) {
+        console.log(`📝 Full text (${interpretation.length} characters):`);
+        console.log(interpretation);
+        console.log('---');
+    }
+    
+    // Test star key conversion
+    console.log('🌟 Star key conversions:');
+    console.log('2 (Moon) ->', getStarKeyFromNumber(2));
+    console.log('4 (Mercury) ->', getStarKeyFromNumber(4));
+    
+    return interpretation;
+}
+
+// Call debug function on load
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        debugStarDatabase();
+        testStarSevyTaek();
+    }, 1000);
+});
+
+// Make test function globally available
+window.testStarSevyTaek = testStarSevyTaek;
