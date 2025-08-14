@@ -1204,12 +1204,17 @@ function generateInsights() {
 }
 
 function createCharts() {
+    if (!window.Chart) {
+        console.warn('Chart.js not available - skipping charts');
+        return;
+    }
     // Card frequency chart
     createCardFrequencyChart();
     createMoodChart();
 }
 
 function createCardFrequencyChart() {
+    if (!window.Chart) return;
     const ctx = document.getElementById('cardFrequencyChart').getContext('2d');
     
     const cardFrequency = {};
@@ -1245,6 +1250,7 @@ function createCardFrequencyChart() {
 }
 
 function createMoodChart() {
+    if (!window.Chart) return;
     if (journalEntries.length === 0) return;
     
     const ctx = document.getElementById('moodChart').getContext('2d');
@@ -1437,7 +1443,7 @@ function toggleFullscreen() {
 }
 
 function exportHistory() {
-    if (typeof jsPDF === 'undefined') {
+    if (!window.jspdf || !window.jspdf.jsPDF) {
         showNotification('ไม่สามารถส่งออก PDF ได้ในขณะนี้', 'warning');
         return;
     }
@@ -1518,7 +1524,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Service Worker Registration for PWA (only works over HTTP/HTTPS)
     if ('serviceWorker' in navigator && window.location.protocol !== 'file:') {
-        navigator.serviceWorker.register('/sw.js')
+        navigator.serviceWorker.register('sw.js')
             .then(registration => console.log('SW registered'))
             .catch(error => console.log('SW registration failed (this is normal when running locally)'));
     }

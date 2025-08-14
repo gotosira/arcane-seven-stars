@@ -58,6 +58,21 @@ const translations = {
         numericalTableExplanation: "ตารางแสดงการเรียงลำดับตัวเลขจากไพ่ทั้ง 3 ใบ และเลขที่เน้นคือยามปัจจุบัน",
         currentYam: "ยามปัจจุบัน",
         yamHighlightNote: "เลขที่เน้นสีแดง 🌟 คือเลขที่ตรงกับยามปัจจุบัน",
+        // Pick A Card
+        navPickCard: "Pick A Card",
+        pickCardTitle: "🎯 Pick A Card",
+        pickCardSubtitle: "เลือกไพ่ 1 ใบจาก 3 ใบ",
+        pickCardInstruction: "🔮 เลือกไพ่ 1 ใบจากด้านล่าง",
+        pickCardBtn: "เริ่มเลือกไพ่ใหม่",
+        cardNumber: "ไพ่ที่",
+        yourChoice: "ไพ่ที่คุณเลือก",
+        shareCard: "แชร์",
+        pickAnotherCard: "เลือกไพ่ใหม่",
+        // Star influence in Pick A Card
+        pickCardStarTitle: "🌟 ดาวเสวยแทรก",
+        pickCardSevyStar: "ดาวเสวย",
+        pickCardTaekStar: "ดาวแทรก",
+        pickCardInfluence: "ผลการตีความ",
         // Star Sevy-Taek
         navStarSevy: "ดาวเสวยแทรก",
         starSevyTitle: "ตำราดาวเสวยดาวแทรก",
@@ -139,6 +154,21 @@ const translations = {
         numericalTableExplanation: "Table showing numerical sequences from all 3 cards with current Yam numbers highlighted",
         currentYam: "Current Yam",
         yamHighlightNote: "Red highlighted numbers 🌟 match the current Yam",
+        // Pick A Card
+        navPickCard: "Pick A Card",
+        pickCardTitle: "🎯 Pick A Card",
+        pickCardSubtitle: "Choose 1 card from 3",
+        pickCardInstruction: "🔮 Choose 1 card from below",
+        pickCardBtn: "Start New Pick",
+        cardNumber: "Card",
+        yourChoice: "Your Chosen Card",
+        shareCard: "Share",
+        pickAnotherCard: "Pick Another Card",
+        // Star influence in Pick A Card
+        pickCardStarTitle: "🌟 Star Sevy-Taek",
+        pickCardSevyStar: "Sevy Star",
+        pickCardTaekStar: "Taek Star",
+        pickCardInfluence: "Interpretation",
         // Star Sevy-Taek
         navStarSevy: "Star Sevy-Taek",
         starSevyTitle: "Star Sevy-Taek System",
@@ -191,6 +221,9 @@ const dailyQuotes = {
 function switchLanguage(lang) {
     currentLanguage = lang;
     localStorage.setItem('language', lang);
+    try {
+        document.documentElement.setAttribute('lang', lang === 'th' ? 'th' : 'en');
+    } catch (e) { /* noop */ }
     updateUILanguage();
     updateDailyQuote();
 }
@@ -204,10 +237,12 @@ function updateUILanguage() {
     
     // Update navigation tabs
     const navTabs = document.querySelectorAll('.nav-tab');
-    const navKeys = ['navDaily', 'navSpreads', 'navJournal', 'navAnalytics', 'navMeditation'];
+    const navKeys = ['navDaily', 'navPickCard', 'navSpreads', 'navJournal', 'navAnalytics', 'navMeditation', 'navStarSevy'];
     navTabs.forEach((tab, index) => {
-        const icon = tab.querySelector('i').outerHTML;
-        tab.innerHTML = `${icon} ${t[navKeys[index]]}`;
+        if (navKeys[index] && t[navKeys[index]]) {
+            const icon = tab.querySelector('i').outerHTML;
+            tab.innerHTML = `${icon} ${t[navKeys[index]]}`;
+        }
     });
     
     // Update main content sections
@@ -215,6 +250,9 @@ function updateUILanguage() {
     
     // Update 3-card section
     updateThreeCardsLanguage(t);
+    
+    // Update Pick A Card section
+    updatePickCardLanguage();
 }
 
 function updateThreeCardsLanguage(t) {
@@ -1550,6 +1588,74 @@ function handleCardClick(cardFile, cardElement) {
     // Animate card flip
     cardElement.classList.add('flipped');
     
+    // Show star interpretation immediately (no delay)
+    const immediateStarInfluence = calculateStarInfluence(cardFile);
+    const { sevyStar, taekStar, sevyStarName, taekStarName, yamInfo } = immediateStarInfluence;
+    
+    // Display Star Sevy-Taek interpretation immediately
+    const sevyStarKey = getStarKeyFromNumber(sevyStar);
+    const taekStarKey = getStarKeyFromNumber(taekStar);
+    const interpretationKey = `${sevyStarKey}-${taekStarKey}`;
+    
+    // Get star interpretation elements
+    const starSevyTaekInterpretation = document.getElementById('starSevyTaekInterpretation');
+    const starDetailedInterpretation = document.getElementById('starDetailedInterpretation');
+    const starInterpretationContent = document.getElementById('starInterpretationContent');
+    const detailedInterpretationContent = document.getElementById('detailedInterpretationContent');
+    
+    console.log(`⚡ Immediate display - Star combination: ${sevyStarKey}-${taekStarKey}`);
+    
+    if (typeof STAR_SEVY_TAEK_DATABASE !== 'undefined' && STAR_SEVY_TAEK_DATABASE.interpretations[interpretationKey]) {
+        const interpretation = STAR_SEVY_TAEK_DATABASE.interpretations[interpretationKey];
+        console.log(`✅ Showing interpretation immediately (${interpretation.length} chars)`);
+        
+        // First section: Basic star info
+        if (starInterpretationContent) {
+            starInterpretationContent.innerHTML = `
+                <div class="star-combination-daily">
+                    <h6>${getStarName(sevyStar)}เสวย - ${getStarName(taekStar)}แทรก</h6>
+                    <div class="star-details-daily">
+                        <span class="sevy-detail">
+                            <i class="fas fa-star text-golden"></i> 
+                            ดาวเสวย: ${getStarName(sevyStar)} (${sevyStar})
+                        </span>
+                        <span class="taek-detail">
+                            <i class="fas fa-star-half-alt text-red"></i> 
+                            ดาวแทรก: ${getStarName(taekStar)} (${taekStar})
+                        </span>
+                    </div>
+                    <div class="star-timing-info">
+                        <p><strong>ยาม:</strong> ${yamInfo.periodName} (${yamInfo.time})</p>
+                        <p><strong>วันที่:</strong> ${yamInfo.dayName}</p>
+                    </div>
+                </div>
+            `;
+        }
+        if (starSevyTaekInterpretation) starSevyTaekInterpretation.classList.remove('hidden');
+        
+        // Second section: Detailed interpretation from scripture
+        if (detailedInterpretationContent) {
+            detailedInterpretationContent.innerHTML = `
+                <div class="detailed-star-interpretation">
+                    <div class="scripture-reference">
+                        <h6><i class="fas fa-scroll"></i> ${getStarName(sevyStar)}เสวย - ${getStarName(taekStar)}แทรก</h6>
+                    </div>
+                    <div class="interpretation-text">
+                        <p><strong>ความหมายตามตำรา:</strong></p>
+                        <div class="scripture-content">
+                            <p style="white-space: pre-wrap; line-height: 1.8;">${interpretation}</p>
+                        </div>
+                    </div>
+                    <div class="interpretation-guidance">
+                        <h6><i class="fas fa-lightbulb"></i> คำแนะนำ</h6>
+                        <p>การตีความนี้เป็นไปตามตำราโบราณไทย ควรใช้เป็นแนวทางในการพิจารณาเหตุการณ์ที่อาจเกิดขึ้น และเตรียมตัวรับมือกับสถานการณ์ต่างๆ ได้อย่างเหมาะสม</p>
+                    </div>
+                </div>
+            `;
+        }
+        if (starDetailedInterpretation) starDetailedInterpretation.classList.remove('hidden');
+    }
+    
     setTimeout(() => {
         // Reveal the selected card
         const cardData = getCardData(cardFile);
@@ -1663,8 +1769,7 @@ function handleCardClick(cardFile, cardElement) {
         if (starElements.starInfo) starElements.starInfo.style.display = 'flex';
         if (starElements.starExplanation) starElements.starExplanation.style.display = 'block';
         
-        // Star influence result section removed per user request
-        // Only showing the star interpretation sections (starSevyTaekInterpretation and starDetailedInterpretation)
+                // Star interpretation already shown immediately above (outside setTimeout)
         
         // Show daily affirmation
         const affirmation = generateAffirmation(selectedCard.name);
@@ -1674,7 +1779,7 @@ function handleCardClick(cardFile, cardElement) {
         playSound('successSound');
         
         showNotification('เลือกไพ่สำเร็จ! 🎉', 'success');
-    }, 800);
+    }, 300);
 }
 
 // Show the revealed card
@@ -3499,11 +3604,13 @@ function shareCard() {
 function readAloud() {
     if (!dailyCard) return;
     
-    const text = `ไพ่ประจำวันของคุณคือ ${dailyCard.name}. ${dailyCard.meaning}`;
+    const text = currentLanguage === 'th'
+        ? `ไพ่ประจำวันของคุณคือ ${dailyCard.name}. ${dailyCard.meaning}`
+        : `Your daily card is ${dailyCard.name}. ${dailyCard.meaning}`;
     
     if ('speechSynthesis' in window) {
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'th-TH';
+        utterance.lang = currentLanguage === 'th' ? 'th-TH' : 'en-US';
         utterance.rate = 0.8;
         speechSynthesis.speak(utterance);
     }
@@ -4100,9 +4207,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup daily quote (use the new system instead)
     updateDailyQuote();
     
-    // Add keyboard shortcut for reset (Ctrl+R or Cmd+R)
+    // Add keyboard shortcut for reset (Ctrl+Shift+R or Cmd+Shift+R)
     document.addEventListener('keydown', (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key === 'r' && e.shiftKey) {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'r' && e.shiftKey) {
             e.preventDefault();
             manualResetDailyCard();
         }
@@ -5137,3 +5244,316 @@ window.addEventListener('load', () => {
 
 // Make test function globally available
 window.testStarSevyTaek = testStarSevyTaek;
+
+// ==============================================
+// PICK A CARD FEATURE
+// ==============================================
+
+// Pick A Card state
+let pickACardState = {
+    isActive: false,
+    selectedCard: null,
+    pickedPosition: null
+};
+
+// Pick a single card from the three-card layout
+function pickSingleCard(position) {
+    console.log(`Picking card at position: ${position}`);
+    
+    // Disable all card interactions temporarily
+    const allSlots = document.querySelectorAll('.pick-card-slot');
+    allSlots.forEach(slot => {
+        slot.style.pointerEvents = 'none';
+        slot.classList.add('loading');
+    });
+    
+    // Get random card from available cards
+    const cardFiles = Object.keys(CARD_DATA);
+    const randomCardFile = cardFiles[Math.floor(Math.random() * cardFiles.length)];
+    const cardData = getCardData(randomCardFile);
+    
+    // Store the picked card
+    pickACardState.selectedCard = {
+        file: randomCardFile,
+        name: cardData.name,
+        meaning: cardData.meaning,
+        position: position,
+        date: new Date().toISOString()
+    };
+    pickACardState.pickedPosition = position;
+    pickACardState.isActive = true;
+    
+    // Animate the selected card slot
+    const selectedSlot = document.querySelector(`[data-position="${position}"] .pick-card-slot`);
+    selectedSlot.classList.add('revealing');
+    
+    // Add flip animation
+    setTimeout(() => {
+        selectedSlot.classList.add('flipped');
+        
+        // Update the image to show the revealed card
+        const cardImg = selectedSlot.querySelector('img');
+        cardImg.src = randomCardFile;
+        cardImg.alt = cardData.name;
+        
+        // Hide the pick indicator
+        const indicator = selectedSlot.querySelector('.pick-indicator');
+        indicator.style.display = 'none';
+        
+        // Show result after animation
+        setTimeout(() => {
+            showPickedCardResult();
+        }, 800);
+        
+    }, 300);
+    
+    // Play sound effect if enabled
+    if (soundEnabled && typeof playCardFlipSound === 'function') {
+        playCardFlipSound();
+    }
+}
+
+// Display the picked card result
+function showPickedCardResult() {
+    const t = translations[currentLanguage];
+    const card = pickACardState.selectedCard;
+    
+    // Hide the three cards layout
+    document.getElementById('pickThreeCards').style.display = 'none';
+    document.getElementById('pickCardInstruction').style.display = 'none';
+    
+    // Show result section
+    const resultSection = document.getElementById('pickCardResult');
+    resultSection.style.display = 'block';
+    
+    // Update content with picked card info
+    document.getElementById('pickedCardImage').src = card.file;
+    document.getElementById('pickedCardImage').alt = card.name;
+    document.getElementById('pickedCardName').textContent = card.name;
+    document.getElementById('pickedCardMeaning').textContent = card.meaning;
+    
+    // Calculate and display star influence
+    const starInfluence = calculateStarInfluence(card.file);
+    if (starInfluence) {
+        const { sevyStar, taekStar, sevyStarName, taekStarName, influence } = starInfluence;
+        
+        // Update star information
+        document.getElementById('pickCardSevyValue').textContent = `${sevyStar} (${sevyStarName})`;
+        document.getElementById('pickCardTaekValue').textContent = `${taekStar} (${taekStarName})`;
+        document.getElementById('pickCardInfluenceText').textContent = influence;
+        
+        // Show star info section
+        document.getElementById('pickCardStarInfo').style.display = 'block';
+        
+        console.log('🌟 Star influence for Pick A Card:', starInfluence);
+    }
+    
+    // Update language-specific texts
+    updatePickCardLanguage();
+    
+    // Add reveal animation
+    setTimeout(() => {
+        resultSection.classList.add('revealed');
+    }, 100);
+    
+    console.log(`✅ Pick A Card completed - Selected: ${card.name}`);
+}
+
+// Reset Pick A Card for new selection
+function pickAnotherCard() {
+    console.log('Resetting Pick A Card...');
+    
+    // Reset state
+    pickACardState = {
+        isActive: false,
+        selectedCard: null,
+        pickedPosition: null
+    };
+    
+    // Hide result section
+    const resultSection = document.getElementById('pickCardResult');
+    resultSection.style.display = 'none';
+    resultSection.classList.remove('revealed');
+    
+    // Hide star info section
+    const starInfoSection = document.getElementById('pickCardStarInfo');
+    if (starInfoSection) {
+        starInfoSection.style.display = 'none';
+    }
+    
+    // Show the three cards layout again
+    document.getElementById('pickThreeCards').style.display = 'flex';
+    document.getElementById('pickCardInstruction').style.display = 'block';
+    
+    // Reset all card slots
+    const allSlots = document.querySelectorAll('.pick-card-slot');
+    allSlots.forEach(slot => {
+        slot.style.pointerEvents = 'auto';
+        slot.classList.remove('loading', 'revealing', 'flipped');
+        
+        // Reset image to card back
+        const img = slot.querySelector('img');
+        const position = slot.closest('.pick-card-item').dataset.position;
+        img.src = 'Card Back.png';
+        img.alt = `Pick Card ${position}`;
+        
+        // Show pick indicator again
+        const indicator = slot.querySelector('.pick-indicator');
+        indicator.style.display = 'flex';
+    });
+    
+    console.log('✅ Pick A Card reset completed');
+}
+
+// Share picked card
+function sharePickedCard() {
+    const card = pickACardState.selectedCard;
+    if (!card) return;
+    
+    const t = translations[currentLanguage];
+    
+    // Create shareable text with star influence
+    let shareText = currentLanguage === 'th' 
+        ? `🎯 Pick A Card - ${card.name}\n\n🔮 ${card.meaning}`
+        : `🎯 Pick A Card - ${card.name}\n\n🔮 ${card.meaning}`;
+    
+    // Add star influence if available
+    const starInfluence = calculateStarInfluence(card.file);
+    if (starInfluence) {
+        const { sevyStar, taekStar, sevyStarName, taekStarName, influence } = starInfluence;
+        shareText += currentLanguage === 'th' 
+            ? `\n\n🌟 ดาวเสวย: ${sevyStar} (${sevyStarName})\n🌟 ดาวแทรก: ${taekStar} (${taekStarName})\n\n📜 ${influence}`
+            : `\n\n🌟 Sevy Star: ${sevyStar} (${sevyStarName})\n🌟 Taek Star: ${taekStar} (${taekStarName})\n\n📜 ${influence}`;
+    }
+    
+    // Add hashtags
+    shareText += currentLanguage === 'th' 
+        ? `\n\n#PickACard #ไพ่ยิปซี #ดวงดาว #ดาวเสวยแทรก`
+        : `\n\n#PickACard #Tarot #Fortune #StarSevyTaek`;
+    
+    // Use Web Share API if available, otherwise copy to clipboard
+    if (navigator.share) {
+        navigator.share({
+            title: currentLanguage === 'th' ? '🎯 Pick A Card - ไพ่ดวงดาว' : '🎯 Pick A Card - Seven Stars',
+            text: shareText,
+            url: window.location.href
+        }).then(() => {
+            console.log('✅ Pick A Card shared successfully');
+            showNotification(currentLanguage === 'th' ? 'แชร์สำเร็จ!' : 'Shared successfully!', 'success');
+        }).catch((error) => {
+            console.log('Share canceled or failed:', error);
+            copyToClipboard(shareText);
+        });
+    } else {
+        // Fallback: copy to clipboard
+        copyToClipboard(shareText);
+    }
+}
+
+// Save picked card to journal/history
+function savePickedCard() {
+    const card = pickACardState.selectedCard;
+    if (!card) return;
+    
+    // Add to card history
+    if (typeof cardHistory !== 'undefined') {
+        // Calculate star influence for saving
+        const starInfluence = calculateStarInfluence(card.file);
+        
+        const historyEntry = {
+            type: 'pick-a-card',
+            card: card,
+            timestamp: card.date,
+            position: card.position,
+            starInfluence: starInfluence
+        };
+        
+        cardHistory.unshift(historyEntry);
+        localStorage.setItem('cardHistory', JSON.stringify(cardHistory));
+        
+        // Update history display if function exists
+        if (typeof renderHistory === 'function') {
+            renderHistory();
+        }
+        
+        showNotification(
+            currentLanguage === 'th' ? 'บันทึกการเลือกไพ่แล้ว' : 'Pick A Card saved', 
+            'success'
+        );
+        
+        console.log('✅ Pick A Card saved to history');
+    }
+}
+
+// Copy text to clipboard utility
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        showNotification(
+            currentLanguage === 'th' ? 'คัดลอกข้อความแล้ว' : 'Text copied to clipboard', 
+            'success'
+        );
+    }).catch(() => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showNotification(
+            currentLanguage === 'th' ? 'คัดลอกข้อความแล้ว' : 'Text copied to clipboard', 
+            'success'
+        );
+    });
+}
+
+// Update Pick A Card language-specific elements
+function updatePickCardLanguage() {
+    const t = translations[currentLanguage];
+    if (!t) return;
+    
+    // Update Pick A Card tab content
+    const pickCardTitle = document.getElementById('pickCardTitle');
+    const pickCardSubtitle = document.getElementById('pickCardSubtitle');
+    const pickCardInstruction = document.getElementById('pickCardInstruction');
+    const yourChoiceTitle = document.getElementById('yourChoiceTitle');
+    const shareOnTiktokText = document.getElementById('shareOnTiktokText');
+    const pickAnotherCardText = document.getElementById('pickAnotherCardText');
+    
+    if (pickCardTitle && t.pickCardTitle) pickCardTitle.textContent = t.pickCardTitle;
+    if (pickCardSubtitle && t.pickCardSubtitle) pickCardSubtitle.textContent = t.pickCardSubtitle;
+    if (pickCardInstruction && t.pickCardInstruction) {
+        pickCardInstruction.innerHTML = `<p>${t.pickCardInstruction}</p>`;
+    }
+    if (yourChoiceTitle && t.yourChoice) yourChoiceTitle.textContent = t.yourChoice;
+    if (shareOnTiktokText && t.shareCard) shareOnTiktokText.textContent = t.shareCard;
+    if (pickAnotherCardText && t.pickAnotherCard) pickAnotherCardText.textContent = t.pickAnotherCard;
+    
+    // Update star influence labels
+    const pickCardStarTitle = document.getElementById('pickCardStarTitle');
+    const pickCardSevyLabel = document.getElementById('pickCardSevyLabel');
+    const pickCardTaekLabel = document.getElementById('pickCardTaekLabel');
+    const pickCardInfluenceLabel = document.getElementById('pickCardInfluenceLabel');
+    
+    if (pickCardStarTitle && t.pickCardStarTitle) pickCardStarTitle.textContent = t.pickCardStarTitle;
+    if (pickCardSevyLabel && t.pickCardSevyStar) pickCardSevyLabel.textContent = t.pickCardSevyStar + ':';
+    if (pickCardTaekLabel && t.pickCardTaekStar) pickCardTaekLabel.textContent = t.pickCardTaekStar + ':';
+    if (pickCardInfluenceLabel && t.pickCardInfluence) pickCardInfluenceLabel.textContent = t.pickCardInfluence + ':';
+    
+    // Update card number labels
+    const cardNumbers = document.querySelectorAll('.pick-card-item .card-number');
+    cardNumbers.forEach((element, index) => {
+        const position = index + 1;
+        element.textContent = currentLanguage === 'th' ? `ไพ่ที่ ${position}` : `Card ${position}`;
+    });
+    
+    // Update click indicators
+    const clickIndicators = document.querySelectorAll('.pick-indicator span');
+    clickIndicators.forEach(span => {
+        span.textContent = currentLanguage === 'th' ? 'คลิก' : 'Click';
+    });
+}
+
+// ==============================================
+// PICK A CARD FEATURE - END
+// ==============================================

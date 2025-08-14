@@ -2,7 +2,7 @@
   "name": "ไพ่ดวงดาว 7 ดวง - Seven Wonderful Stars",
   "short_name": "ไพ่ดวงดาว",
   "description": "Thai Fortune Cards Daily Reading - Seven Wonderful Stars",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#667eea",
   "theme_color": "#667eea",
@@ -21,6 +21,6 @@
   ],
   "categories": ["entertainment", "lifestyle"],
   "lang": "th",
-  "scope": "/",
+  "scope": "./",
   "prefer_related_applications": false
 } 
